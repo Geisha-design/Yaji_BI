@@ -1,0 +1,61 @@
+-- 创建表 product_info
+CREATE TABLE IF NOT EXISTS product_info (
+    babyId VARCHAR(255) PRIMARY KEY,
+    contact_url TEXT NOT NULL
+);
+
+INSERT INTO product_info (babyId, contact_url) VALUES ('520716061050', 'https://detail.1688.com/offer/520716061050.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('634522031289', 'https://detail.1688.com/offer/634522031289.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('520868166916', 'https://detail.1688.com/offer/520868166916.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('900300120529', 'https://detail.1688.com/offer/900300120529.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('619007769480', 'https://detail.1688.com/offer/619007769480.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('40483008448', 'https://detail.1688.com/offer/40483008448.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('709666223868', 'https://detail.1688.com/offer/709666223868.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('683619512015', 'https://detail.1688.com/offer/683619512015.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('708938768516', 'https://detail.1688.com/offer/708938768516.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('569711432699', 'https://detail.1688.com/offer/569711432699.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('751990874462', 'https://detail.1688.com/offer/751990874462.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('638062490534', 'https://detail.1688.com/offer/638062490534.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('574114935158', 'https://detail.1688.com/offer/574114935158.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('916237083762', 'https://detail.1688.com/offer/916237083762.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('628489608006', 'https://detail.1688.com/offer/628489608006.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('520845703433', 'https://detail.1688.com/offer/520845703433.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('828861711013', 'https://detail.1688.com/offer/828861711013.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('707565630188', 'https://detail.1688.com/offer/707565630188.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('681629493501', 'https://detail.1688.com/offer/681629493501.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('841252895618', 'https://detail.1688.com/offer/841252895618.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('841576617383', 'https://detail.1688.com/offer/841576617383.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('841780960604', 'https://detail.1688.com/offer/841780960604.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('520798338249', 'https://detail.1688.com/offer/520798338249.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('631016647286', 'https://detail.1688.com/offer/631016647286.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('644723027577', 'https://detail.1688.com/offer/644723027577.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('520915847179', 'https://detail.1688.com/offer/520915847179.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('829749320081', 'https://detail.1688.com/offer/829749320081.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('829491095876', 'https://detail.1688.com/offer/829491095876.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('751909377049', 'https://detail.1688.com/offer/751909377049.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('706670454659', 'https://detail.1688.com/offer/706670454659.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('600319682272', 'https://detail.1688.com/offer/600319682272.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('905679877770', 'https://detail.1688.com/offer/905679877770.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('918011200110', 'https://detail.1688.com/offer/918011200110.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('754369367386', 'https://detail.1688.com/offer/754369367386.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('754369367383', 'https://detail.1688.com/offer/754369367383.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('911775650398', 'https://detail.1688.com/offer/911775650398.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('625653286907', 'https://detail.1688.com/offer/625653286907.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('754359571855', 'https://detail.1688.com/offer/754359571855.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('909822020588', 'https://detail.1688.com/offer/909822020588.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('917131193620', 'https://detail.1688.com/offer/917131193620.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('785835710761', 'https://detail.1688.com/offer/785835710761.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('934887385226', 'https://detail.1688.com/offer/934887385226.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('651006047661', 'https://detail.1688.com/offer/651006047661.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('858771913429', 'https://detail.1688.com/offer/858771913429.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('853959548761', 'https://detail.1688.com/offer/853959548761.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('784688294118', 'https://detail.1688.com/offer/784688294118.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('635840739871', 'https://detail.1688.com/offer/635840739871.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('706897951646', 'https://detail.1688.com/offer/706897951646.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('670189358949', 'https://detail.1688.com/offer/670189358949.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('669335456277', 'https://detail.1688.com/offer/669335456277.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('651414983068', 'https://detail.1688.com/offer/651414983068.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('934051879887', 'https://detail.1688.com/offer/934051879887.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('923620621269', 'https://detail.1688.com/offer/923620621269.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('757003911166', 'https://detail.1688.com/offer/757003911166.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');
+INSERT INTO product_info (babyId, contact_url) VALUES ('673360738843', 'https://detail.1688.com/offer/673360738843.html?fromkv=cbuPcPlugin:others&amug_biz=oneself&amug_fl_src=awakeId_984');

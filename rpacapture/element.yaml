@@ -1,0 +1,13 @@
+config:
+  company_name: ÑÇ¼¯
+  mq_ip: 192.168.3.18
+  mq_vhost: v_yagi
+  mq_port: 5672
+  queue_name: q_ebao_yagi_to_rpa_urgent
+  mq_user: ebao_admin
+  mq_password: admin
+  headless: false
+  username: 13816513558
+  password: 13816513558
+  oit_url_ip : https://muniu-test.smartebao.com/oitTrade
+

@@ -1,0 +1,23 @@
+{
+    "location": {
+        "账号": "#ap_email",
+        "密码": "#ap_password",
+        "登录": "#signInSubmit",
+        "验证码图片位置": "xpath://*[@id=\"cvf-page-content\"]/div/div/div/div[2]/div/img",
+        "验证码文字输入框": "xpath://*[@id=\"cvf-page-content\"]/div/div/div/form/div[2]/input",
+        "验证码确认": "#a-autoid-0",
+        "验证码通过标识": "xpath://*[@id=\"cvf-page-content\"]/div/div/div/form/div[4]/div/a"
+    },
+    "alarmmsg" : {
+        "user": "smartebao",
+        "token": "79ffdad4afcf89b8bef6696362aee66d4f843ac5998dd79d69caee8093f9b1f8",
+        "webhook": "https://oapi.dingtalk.com/robot/send?access_token=",
+        "success": "RPA亚集预警信息发送成功",
+        "failure": "RPA亚集预警信息发送失败"
+
+    },
+    "debug": "True"
+}
+
+
+
