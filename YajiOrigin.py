@@ -487,7 +487,9 @@ def orderthree(page,msg,cookie_str,channel):
             ))
     pass
 
+# {'msgId': 'e85d763b-f07f-4761-b49c-77692018737b', 'msgType': 4, 'resultCode': 0, 'resultMsg': '成功', 'timestamp': 1751623442668, 'workOrderNos': ['AL2506290087', 'AL2506300108', 'AL2507010142', 'AL2507020063']}
 
+# {"msgId": "e85d763b-f07f-4761-b49c-77692018737b", "msgType": 4, "resultCode": 0, "resultMsg": "成功", "timestamp": 1751623442668, "workOrderNos": ["AL2506290087", "AL2506300108", "AL2507010142", "AL2507020063"]}
 """
 四号指令逻辑  ALO 完成 最终的  ALO  确认只会确认最后一笔 但是pr确认是列表中的每一都要处理
 """
@@ -497,6 +499,13 @@ def orderfour(page,msg,cookie_str,channel):
         # workOrderNositem = workOrderNos[0]
         # print(workOrderNositem)
         for i in range(0,len(workOrderNos)):
+            innerstatusFlag = 0
+            # 这里先检测一下是不是 complete 状态的
+            # getPRHeaderByCheckInCode?referenceId
+
+
+            # 状态预查询
+
             workOrderNositem = workOrderNos[i]
             print(workOrderNositem)
             headers = {"Cookie": cookie_str}
@@ -515,148 +524,180 @@ def orderfour(page,msg,cookie_str,channel):
                 logger.info(data)
                 prIds = data['prId']
                 logger.info(prIds)
+
+                innerstatus = data.get('status')
+                if (innerstatus == "COMPLETED"):
+                    innerstatusFlag = 1
+
+
             else:
                 logger.info("alo确认数据为空,不进行处理")
-                # 关于票据详情的获取  保证获取内部PrID 号才是后续逻辑执行的前提
-            if (prIds is not None):
-                headers = {"Cookie": cookie_str}
-                payload = {
-                    "filter": {
-                        "prIds": [
-                            prIds
-                        ]
-                    }
+
+
+            # 这一段逻辑是对已经执行情况的说明
+            # 这里一个逻辑串 只要是已经完成的 直接后续不执行
+            if (innerstatusFlag == 1):
+                send_alarm_msg("此笔Alo 完成pr  已经是已完成的状态了 无须再次执行（提醒性质预警）" + str(workOrderNositem))
+
+                main_card_msg = {
+                    "msgId": json.loads(msg).get('msgId'),
+                    "msgType": 4,
+                    "resultCode": 0,
+                    "resultMsg": "成功",
+                    "timestamp": json.loads(msg).get('timestamp'),
+                    "workOrderNos": workOrderNositem
+                    # 消息队列回推消息 json.dumps(main_card_msg, ensure_ascii=False)
                 }
-                response = requests.post(
-                    "https://xb-node.amazon.cn/glenn/booking/ajax/searchBookingDetailsByFilter",
-                    json=payload,
-                    headers=headers)
-
-                thejson = json.loads(response.text)
-                status = thejson.get('status')
-                data = thejson.get('data')
-                bookingDetails = data.get('bookingDetails')[0]
-                bookingHeader = bookingDetails.get('bookingHeader')
-                bookingReference = bookingHeader.get('bookingReference')
-                bookingReference_id = bookingReference.get('id')
-                logger.info("alo确认输出内层的特殊id")
-                logger.info(bookingReference_id)
-
-                # 完成PR点击动作
-                saika = 0
-                if (prIds is not None):
-                    headers = {"Cookie": cookie_str}
-                    payload = {"prId": prIds}
-                    response = requests.post("https://xb-node.amazon.cn/glenn/pr/ajax/completePR", json=payload,
-                                             headers=headers)
-
-
-                    thejson = json.loads(response.text)
-                    status = thejson.get('status')
-                    data = thejson.get('data')
-
-                    if (status == "SUCCESS" and data is not None):
-                        logger.info("完成PR 按钮点击成功 执行后续步骤 "+ str(workOrderNositem))
-                        logger.info(data)
-                        prIds = data['prId']
-                        logger.info(prIds)
-                        saika = 1
-                    else:
-                        logger.info("此笔Alo 完成pr执行异常 请人工介入" + str(workOrderNositem))
-                        send_alarm_msg("此笔Alo 完成pr执行异常 请人工介入" + str(workOrderNositem))
-
-
-                # 完成预定点击动作  这个只有字符串的最后一个编号才会执行确认
-                if (prIds is not None and i == len(workOrderNos)-1 and saika == 1):
-                    headers = {"Cookie": cookie_str}
-                    payload = {
-                        "id": bookingReference_id,
-                        "type": "FBA_BOOKING"}
-                    response = requests.post("https://xb-node.amazon.cn/glenn/booking/ajax/completeBooking",
-                                             json=payload,
-                                             headers=headers)
-
-
-                    thejson = json.loads(response.text)
-                    status = thejson.get('status')
-                    data = thejson.get('data')
-
-                    if (status == "SUCCESS" and data is not None):
-                        logger.info("完成预订 按钮点击成功 执行后续步骤 ")
-                        logger.info(data)
-                        logger.info("错误数据为空,不进行处理")
-                        main_card_msg = {
-                            "msgId": json.loads(msg).get('msgId'),
-                            "msgType": 4,
-                            "resultCode": 0,
-                            "resultMsg": "成功",
-                            "timestamp": json.loads(msg).get('timestamp'),
-                            "workOrderNos": workOrderNos
-                        # 消息队列回推消息 json.dumps(main_card_msg, ensure_ascii=False)
-                        }
-                        logger.info(main_card_msg)
-                        channel.queue_declare(queue='q_rpa_to_ebao_yagi', durable=True)
-                        channel.basic_publish(
-                            exchange='',
-                            routing_key="q_rpa_to_ebao_yagi",
-                            body=json.dumps(main_card_msg, ensure_ascii=False),
-                            properties=pika.BasicProperties(
-                                delivery_mode=2,  # 使消息持久化
-                            ))
-                    else:
-                        logger.info("此笔Alo 完成预订执行异常 请人工介入" + str(workOrderNositem))
-                        send_alarm_msg("此笔Alo 完成预订执行异常 请人工介入" + str(workOrderNositem))
-                        main_card_msg = {
-                            "msgId": json.loads(msg).get('msgId'),
-                            "msgType": 4,
-                            "resultCode": 1,
-                            "resultMsg": "失败",
-                            "timestamp": json.loads(msg).get('timestamp'),
-                            "workOrderNos": workOrderNos
-                        }
-
-                        # 消息队列回推消息 json.dumps(main_card_msg, ensure_ascii=False)
-                        logger.info(main_card_msg)
-                        channel.queue_declare(queue='q_rpa_to_ebao_yagi', durable=True)
-                        channel.basic_publish(
-                            exchange='',
-                            routing_key="q_rpa_to_ebao_yagi",
-                            body=json.dumps(main_card_msg, ensure_ascii=False),
-                            properties=pika.BasicProperties(
-                                delivery_mode=2,  # 使消息持久化
-                            ))
-
+                logger.info(main_card_msg)
+                channel.queue_declare(queue='q_rpa_to_ebao_yagi', durable=True)
+                channel.basic_publish(
+                    exchange='',
+                    routing_key="q_rpa_to_ebao_yagi",
+                    body=json.dumps(main_card_msg, ensure_ascii=False),
+                    properties=pika.BasicProperties(
+                        delivery_mode=2,  # 使消息持久化
+                    ))
 
             else:
-                logger.info("此笔Alo 执行异常 请人工介入"+str(workOrderNositem))
-                send_alarm_msg("此笔Alo 执行异常 请人工介入"+str(workOrderNositem))
 
 
+                    # 关于票据详情的获取  保证获取内部PrID 号才是后续逻辑执行的前提
+                if (prIds is not None):
+                    headers = {"Cookie": cookie_str}
+                    payload = {
+                        "filter": {
+                            "prIds": [
+                                prIds
+                            ]
+                        }
+                    }
+                    response = requests.post(
+                        "https://xb-node.amazon.cn/glenn/booking/ajax/searchBookingDetailsByFilter",
+                        json=payload,
+                        headers=headers)
+
+                    thejson = json.loads(response.text)
+                    status = thejson.get('status')
+                    data = thejson.get('data')
+                    bookingDetails = data.get('bookingDetails')[0]
+                    bookingHeader = bookingDetails.get('bookingHeader')
+                    bookingReference = bookingHeader.get('bookingReference')
+                    bookingReference_id = bookingReference.get('id')
+                    logger.info("alo确认输出内层的特殊id")
+                    logger.info(bookingReference_id)
+
+                    # 完成PR点击动作
+                    saika = 0
+                    if (prIds is not None):
+                        headers = {"Cookie": cookie_str}
+                        payload = {"prId": prIds}
+                        response = requests.post("https://xb-node.amazon.cn/glenn/pr/ajax/completePR", json=payload,
+                                                 headers=headers)
 
 
-    else:
+                        thejson = json.loads(response.text)
+                        status = thejson.get('status')
+                        data = thejson.get('data')
 
-        logger.info("错误数据为空,不进行处理")
-        main_card_msg = {
-            "msgId": json.loads(msg).get('msgId'),
-            "msgType": 4,
-            "resultCode": 1,
-            "resultMsg": "失败",
-            "timestamp": json.loads(msg).get('timestamp')
-        }
+                        if (status == "SUCCESS" and data is not None):
+                            logger.info("完成PR 按钮点击成功 执行后续步骤 "+ str(workOrderNositem))
+                            logger.info(data)
+                            prIds = data['prId']
+                            logger.info(prIds)
+                            saika = 1
+                        else:
+                            logger.info("此笔Alo 完成pr执行异常 请人工介入" + str(workOrderNositem))
+                            send_alarm_msg("此笔Alo 完成pr执行异常 请人工介入" + str(workOrderNositem))
 
-        # 消息队列回推消息 json.dumps(main_card_msg, ensure_ascii=False)
-        logger.info(main_card_msg)
-        channel.queue_declare(queue='q_rpa_to_ebao_yagi', durable=True)
-        channel.basic_publish(
-            exchange='',
-            routing_key="q_rpa_to_ebao_yagi",
-            body=json.dumps(main_card_msg, ensure_ascii=False),
-            properties=pika.BasicProperties(
-                delivery_mode=2,  # 使消息持久化
-            ))
-        print("回传消息队列失败的消息")
-        pass
+
+                    # 完成预定点击动作  这个只有字符串的最后一个编号才会执行确认
+                    if (prIds is not None and i == len(workOrderNos)-1 and saika == 1):
+                        headers = {"Cookie": cookie_str}
+                        payload = {
+                            "id": bookingReference_id,
+                            "type": "FBA_BOOKING"}
+                        response = requests.post("https://xb-node.amazon.cn/glenn/booking/ajax/completeBooking",
+                                                 json=payload,
+                                                 headers=headers)
+
+
+                        thejson = json.loads(response.text)
+                        status = thejson.get('status')
+                        data = thejson.get('data')
+
+                        if (status == "SUCCESS" and data is not None):
+                            logger.info("完成预订 按钮点击成功 执行后续步骤 ")
+                            logger.info(data)
+                            logger.info("错误数据为空,不进行处理")
+                            main_card_msg = {
+                                "msgId": json.loads(msg).get('msgId'),
+                                "msgType": 4,
+                                "resultCode": 0,
+                                "resultMsg": "成功",
+                                "timestamp": json.loads(msg).get('timestamp'),
+                                "workOrderNos": workOrderNos
+                            # 消息队列回推消息 json.dumps(main_card_msg, ensure_ascii=False)
+                            }
+                            logger.info(main_card_msg)
+                            channel.queue_declare(queue='q_rpa_to_ebao_yagi', durable=True)
+                            channel.basic_publish(
+                                exchange='',
+                                routing_key="q_rpa_to_ebao_yagi",
+                                body=json.dumps(main_card_msg, ensure_ascii=False),
+                                properties=pika.BasicProperties(
+                                    delivery_mode=2,  # 使消息持久化
+                                ))
+                        else:
+                            logger.info("此笔Alo 完成预订执行异常 请人工介入" + str(workOrderNositem))
+                            send_alarm_msg("此笔Alo 完成预订执行异常 请人工介入" + str(workOrderNositem))
+                            main_card_msg = {
+                                "msgId": json.loads(msg).get('msgId'),
+                                "msgType": 4,
+                                "resultCode": 1,
+                                "resultMsg": "失败",
+                                "timestamp": json.loads(msg).get('timestamp'),
+                                "workOrderNos": workOrderNos
+                            }
+
+                            # 消息队列回推消息 json.dumps(main_card_msg, ensure_ascii=False)
+                            logger.info(main_card_msg)
+                            channel.queue_declare(queue='q_rpa_to_ebao_yagi', durable=True)
+                            channel.basic_publish(
+                                exchange='',
+                                routing_key="q_rpa_to_ebao_yagi",
+                                body=json.dumps(main_card_msg, ensure_ascii=False),
+                                properties=pika.BasicProperties(
+                                    delivery_mode=2,  # 使消息持久化
+                                ))
+
+
+                else:
+                    logger.info("此笔Alo 执行异常 请人工介入"+str(workOrderNositem))
+                    send_alarm_msg("此笔Alo 执行异常 请人工介入"+str(workOrderNositem))
+
+        else:
+
+            logger.info("错误数据为空,不进行处理")
+            main_card_msg = {
+                "msgId": json.loads(msg).get('msgId'),
+                "msgType": 4,
+                "resultCode": 1,
+                "resultMsg": "失败",
+                "timestamp": json.loads(msg).get('timestamp')
+            }
+
+            # 消息队列回推消息 json.dumps(main_card_msg, ensure_ascii=False)
+            logger.info(main_card_msg)
+            channel.queue_declare(queue='q_rpa_to_ebao_yagi', durable=True)
+            channel.basic_publish(
+                exchange='',
+                routing_key="q_rpa_to_ebao_yagi",
+                body=json.dumps(main_card_msg, ensure_ascii=False),
+                properties=pika.BasicProperties(
+                    delivery_mode=2,  # 使消息持久化
+                ))
+            print("回传消息队列失败的消息")
+            pass
 
 
     pass
