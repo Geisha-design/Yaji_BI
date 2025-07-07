@@ -536,16 +536,18 @@ def orderfour(page,msg,cookie_str,channel):
 
             # 这一段逻辑是对已经执行情况的说明
             # 这里一个逻辑串 只要是已经完成的 直接后续不执行
+            # 这一段是后续线上运行执行过程中发现的问题
             if (innerstatusFlag == 1):
-                send_alarm_msg("此笔Alo 完成pr  已经是已完成的状态了 无须再次执行（提醒性质预警）" + str(workOrderNositem))
 
+                returnList = [workOrderNositem]
+                send_alarm_msg("此笔Alo 完成pr  已经是已完成的状态了 无须再次执行（提醒性质预警）" + str(workOrderNositem))
                 main_card_msg = {
                     "msgId": json.loads(msg).get('msgId'),
                     "msgType": 4,
                     "resultCode": 0,
                     "resultMsg": "成功",
                     "timestamp": json.loads(msg).get('timestamp'),
-                    "workOrderNos": workOrderNositem
+                    "workOrderNos": returnList
                     # 消息队列回推消息 json.dumps(main_card_msg, ensure_ascii=False)
                 }
                 logger.info(main_card_msg)
@@ -675,29 +677,29 @@ def orderfour(page,msg,cookie_str,channel):
                     logger.info("此笔Alo 执行异常 请人工介入"+str(workOrderNositem))
                     send_alarm_msg("此笔Alo 执行异常 请人工介入"+str(workOrderNositem))
 
-        else:
+    else:
 
-            logger.info("错误数据为空,不进行处理")
-            main_card_msg = {
-                "msgId": json.loads(msg).get('msgId'),
-                "msgType": 4,
-                "resultCode": 1,
-                "resultMsg": "失败",
-                "timestamp": json.loads(msg).get('timestamp')
-            }
+        logger.info("错误数据为空,不进行处理")
+        main_card_msg = {
+            "msgId": json.loads(msg).get('msgId'),
+            "msgType": 4,
+            "resultCode": 1,
+            "resultMsg": "失败",
+            "timestamp": json.loads(msg).get('timestamp')
+        }
 
-            # 消息队列回推消息 json.dumps(main_card_msg, ensure_ascii=False)
-            logger.info(main_card_msg)
-            channel.queue_declare(queue='q_rpa_to_ebao_yagi', durable=True)
-            channel.basic_publish(
-                exchange='',
-                routing_key="q_rpa_to_ebao_yagi",
-                body=json.dumps(main_card_msg, ensure_ascii=False),
-                properties=pika.BasicProperties(
-                    delivery_mode=2,  # 使消息持久化
-                ))
-            print("回传消息队列失败的消息")
-            pass
+        # 消息队列回推消息 json.dumps(main_card_msg, ensure_ascii=False)
+        logger.info(main_card_msg)
+        channel.queue_declare(queue='q_rpa_to_ebao_yagi', durable=True)
+        channel.basic_publish(
+            exchange='',
+            routing_key="q_rpa_to_ebao_yagi",
+            body=json.dumps(main_card_msg, ensure_ascii=False),
+            properties=pika.BasicProperties(
+                delivery_mode=2,  # 使消息持久化
+            ))
+        print("回传消息队列失败的消息")
+        pass
 
 
     pass
