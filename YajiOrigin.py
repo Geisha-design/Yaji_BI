@@ -349,7 +349,7 @@ def ordertwo(page,msg,cookie_str,channel):
             logger.info(data)
         else:
             logger.info("makeError接口触发失败")
-            send_alarm_msg("此笔修复makeError接口 执行异常 请人工介入" + str(workOrderNo))
+
 
     if (prIds is not None and dataerror is not None):
         payload = {
@@ -413,6 +413,7 @@ def ordertwo(page,msg,cookie_str,channel):
                 properties=pika.BasicProperties(
                     delivery_mode=2,  # 使消息持久化
                 ))
+            send_alarm_msg("此笔修复异常 执行异常 请人工介入" + str(workOrderNo))
     pass
 
 

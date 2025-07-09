@@ -151,3 +151,246 @@
 2025-07-07 11:36:48.209 | INFO     | __main__:orderfour:526 - R177316345
 2025-07-07 11:36:48.406 | INFO     | rpacapture:send_alarm_msg:125 - RPA亚集预警信息发送成功
 2025-07-07 11:36:48.406 | INFO     | __main__:orderfour:553 - {'msgId': 'e85d763b-f07f-4761-b49c-77692018737b', 'msgType': 4, 'resultCode': 0, 'resultMsg': '成功', 'timestamp': 1751623442668, 'workOrderNos': ['AL2507020063']}
+2025-07-07 12:07:54.544 | ERROR    | __main__:<module>:805 - Timeout during AMQP handshake'192.168.3.18'/(<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_STREAM: 1>, 6, '', ('192.168.3.18', 5672)); ssl=False
+2025-07-07 12:08:08.587 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:08:22.638 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:08:37.043 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:08:51.098 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:09:05.142 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:26:39.906 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:26:53.948 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:27:08.005 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:27:22.057 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:27:36.099 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:27:50.153 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:28:04.205 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:28:18.255 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:28:32.294 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:28:46.343 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:29:00.391 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:29:14.439 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:29:28.496 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:29:42.542 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:29:56.581 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:30:10.631 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:30:24.679 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:30:38.731 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:30:52.784 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:31:06.840 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:31:20.885 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:31:34.958 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:31:49.011 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:32:03.063 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:32:17.115 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:32:31.160 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:32:45.208 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:32:59.260 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:33:13.316 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:33:27.363 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:33:41.412 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:33:55.460 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:34:09.504 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:34:23.548 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:34:37.597 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:34:51.641 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:35:05.689 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:35:19.726 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:35:33.773 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:35:47.821 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:36:01.867 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:36:15.918 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:36:29.967 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:36:44.009 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:36:58.060 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:37:12.107 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:37:26.157 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:37:40.200 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:37:54.250 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:38:08.296 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:38:22.343 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:38:36.391 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:38:50.439 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:39:04.485 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:39:18.534 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:39:32.575 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:39:46.623 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:40:00.673 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:40:14.725 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:40:28.778 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:40:42.823 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:40:56.868 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:41:10.916 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:41:24.957 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:41:39.011 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:41:53.060 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:42:07.106 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:42:21.155 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:42:35.198 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:42:49.306 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:43:03.356 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:43:17.400 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:43:31.450 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:43:45.499 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:43:59.550 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:44:13.591 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:44:27.641 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:44:41.682 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:44:55.717 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:45:09.766 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:45:23.807 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:45:37.849 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:45:51.898 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:46:05.947 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:46:19.993 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:46:34.041 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:46:48.089 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:47:02.135 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:47:16.183 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:47:30.233 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:47:44.283 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:47:58.325 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:48:12.378 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:48:26.434 | ERROR    | __main__:<module>:805 - 
+2025-07-07 12:48:35.498 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:48:44.546 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:48:53.589 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:49:02.636 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:49:11.677 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:49:20.719 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:49:29.767 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:49:38.813 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:49:47.861 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:49:56.905 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:50:05.949 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:50:14.991 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:50:24.039 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:50:33.083 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:50:42.128 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:50:51.169 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:51:00.218 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:51:09.261 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:51:18.306 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:51:27.355 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:51:36.404 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:51:45.443 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:51:54.476 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:52:03.526 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:52:12.565 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:52:21.607 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:52:30.654 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:52:39.681 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:52:48.733 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:52:57.781 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:53:06.827 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:53:15.874 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:53:24.919 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:53:33.961 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:53:43.008 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:53:52.051 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:54:01.098 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:54:10.146 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:54:19.193 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:54:28.240 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:54:37.288 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:54:46.355 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:54:55.394 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:55:04.441 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:55:13.489 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:55:22.528 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:55:31.579 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:55:40.631 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:55:49.667 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:55:58.717 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:56:07.751 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:56:16.800 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:56:25.846 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:56:34.882 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:56:43.930 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:56:52.973 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:57:02.016 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:57:11.063 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:57:20.113 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:57:29.160 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:57:38.207 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:57:47.255 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:57:56.295 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:58:05.339 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:58:14.386 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:58:23.433 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:58:32.481 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:58:41.529 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:58:50.577 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:58:59.626 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:59:08.670 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:59:17.714 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:59:26.762 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:59:35.805 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:59:44.852 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 12:59:53.901 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:00:02.948 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:00:11.991 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:00:21.037 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:00:30.086 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:00:39.134 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:00:48.181 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:00:57.224 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:01:06.273 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:01:15.319 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:01:24.364 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:01:33.410 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:01:42.457 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:01:51.505 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:02:00.553 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:02:09.601 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:02:18.644 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:02:27.695 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:02:36.744 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:02:45.794 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:02:54.831 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:03:03.875 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:03:12.919 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:03:21.964 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:03:31.017 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:03:40.072 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:03:49.117 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:03:58.170 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:04:07.214 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:04:16.254 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:04:25.304 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:04:34.349 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:04:43.392 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:04:52.440 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:05:01.490 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:05:10.532 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:05:19.579 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:05:28.633 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:05:37.676 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:05:46.727 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:05:55.772 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:06:04.823 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:06:13.869 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:06:22.917 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:06:31.965 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:06:41.009 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:06:50.049 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:06:59.094 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:07:08.135 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:07:17.184 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:07:26.233 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:07:35.275 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:07:44.319 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:07:53.369 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:08:02.413 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:08:11.458 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:08:20.506 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:08:29.555 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:08:38.603 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:08:47.647 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:08:56.694 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:09:05.739 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:09:14.785 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:09:23.832 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:09:32.878 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:09:41.994 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:09:51.041 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
+2025-07-07 13:10:00.087 | ERROR    | __main__:<module>:805 - StreamLostError: ("Stream connection lost: ConnectionResetError(54, 'Connection reset by peer')",)
