@@ -548,12 +548,23 @@ def orderfour(page,msg,cookie_str,channel):
                     thejson = json.loads(response.text)
                     status = thejson.get('status')
                     data = thejson.get('data')
-                    bookingDetails = data.get('bookingDetails')[0]
-                    bookingHeader = bookingDetails.get('bookingHeader')
-                    bookingReference = bookingHeader.get('bookingReference')
-                    bookingReference_id = bookingReference.get('id')
 
-                    innerstatus = bookingDetails.get('bookingHeader').get('status')
+                    if data.get('bookingDetails')==[]:
+                        logger.info("detail   信息为空列表")
+                        bookingDetails = ''
+                        bookingHeader = ''
+                        bookingReference = ''
+                        bookingReference_id = ''
+                        innerstatus = ''
+                    else:
+                        bookingDetails = data.get('bookingDetails')[0]
+                        bookingHeader = bookingDetails.get('bookingHeader')
+                        bookingReference = bookingHeader.get('bookingReference')
+                        bookingReference_id = bookingReference.get('id')
+                        innerstatus = bookingDetails.get('bookingHeader').get('status')
+
+
+
                     logger.info("输出指令4的下层完成状态")
                     logger.info(innerstatus)
                     if (innerstatus == "COMPLETED"):
@@ -616,10 +627,27 @@ def orderfour(page,msg,cookie_str,channel):
                     thejson = json.loads(response.text)
                     status = thejson.get('status')
                     data = thejson.get('data')
-                    bookingDetails = data.get('bookingDetails')[0]
-                    bookingHeader = bookingDetails.get('bookingHeader')
-                    bookingReference = bookingHeader.get('bookingReference')
-                    bookingReference_id = bookingReference.get('id')
+
+                    if data.get('bookingDetails')==[]:
+                        logger.info("detail   信息为空列表")
+                        bookingDetails = ''
+                        bookingHeader = ''
+                        bookingReference = ''
+                        bookingReference_id = ''
+                        innerstatus = ''
+                    else:
+                        bookingDetails = data.get('bookingDetails')[0]
+                        bookingHeader = bookingDetails.get('bookingHeader')
+                        bookingReference = bookingHeader.get('bookingReference')
+                        bookingReference_id = bookingReference.get('id')
+                        innerstatus = bookingDetails.get('bookingHeader').get('status')
+
+
+
+                    # bookingDetails = data.get('bookingDetails')[0]
+                    # bookingHeader = bookingDetails.get('bookingHeader')
+                    # bookingReference = bookingHeader.get('bookingReference')
+                    # bookingReference_id = bookingReference.get('id')
 
                     # innerstatus = bookingDetails.get('status')
                     # logger.info("输出指令4的下层完成状态")
