@@ -593,24 +593,24 @@ def orderfour(page,msg,cookie_str,channel):
 
                 # 最后统一去确认
 
-                main_card_msg = {
-                    "msgId": json.loads(msg).get('msgId'),
-                    "msgType": 4,
-                    "resultCode": 0,
-                    "resultMsg": "成功",
-                    "timestamp": json.loads(msg).get('timestamp'),
-                    "workOrderNos": returnList
-                    # 消息队列回推消息 json.dumps(main_card_msg, ensure_ascii=False)
-                }
-                logger.info(main_card_msg)
-                channel.queue_declare(queue='q_rpa_to_ebao_yagi', durable=True)
-                channel.basic_publish(
-                    exchange='',
-                    routing_key="q_rpa_to_ebao_yagi",
-                    body=json.dumps(main_card_msg, ensure_ascii=False),
-                    properties=pika.BasicProperties(
-                        delivery_mode=2,  # 使消息持久化
-                    ))
+                # main_card_msg = {
+                #     "msgId": json.loads(msg).get('msgId'),
+                #     "msgType": 4,
+                #     "resultCode": 0,
+                #     "resultMsg": "成功",
+                #     "timestamp": json.loads(msg).get('timestamp'),
+                #     "workOrderNos": returnList
+                #     # 消息队列回推消息 json.dumps(main_card_msg, ensure_ascii=False)
+                # }
+                # logger.info(main_card_msg)
+                # channel.queue_declare(queue='q_rpa_to_ebao_yagi', durable=True)
+                # channel.basic_publish(
+                #     exchange='',
+                #     routing_key="q_rpa_to_ebao_yagi",
+                #     body=json.dumps(main_card_msg, ensure_ascii=False),
+                #     properties=pika.BasicProperties(
+                #         delivery_mode=2,  # 使消息持久化
+                #     ))
 
             else:
 
@@ -710,8 +710,8 @@ def orderfour(page,msg,cookie_str,channel):
                                 "resultCode": 0,
                                 "resultMsg": "成功",
                                 "timestamp": json.loads(msg).get('timestamp'),
-                                "workOrderNos": workOrderNositem
-                                # "workOrderNos": workOrderNos
+                                # "workOrderNos": workOrderNositem
+                                "workOrderNos": workOrderNos
 
                             # 消息队列回推消息 json.dumps(main_card_msg, ensure_ascii=False)
                             }
@@ -733,8 +733,8 @@ def orderfour(page,msg,cookie_str,channel):
                                 "resultCode": 1,
                                 "resultMsg": "失败",
                                 "timestamp": json.loads(msg).get('timestamp'),
-                                "workOrderNos": workOrderNositem
-                                # "workOrderNos": workOrderNos
+                                # "workOrderNos": workOrderNositem
+                                "workOrderNos": workOrderNos
 
                             }
 
