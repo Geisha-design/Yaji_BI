@@ -872,18 +872,18 @@ if __name__ == '__main__':
     import datetime
     today = datetime.datetime.now().strftime('%Y-%m-%d')
     logger.add("亚集-logs/" + f'{today}.log', rotation="100 MB")
-    establish_connection()
-    # while True:
-    #     try:
-    #         establish_connection()
-    #         logger.complete()
-    #     except Exception as e:
-    #         send_alarm_msg(str(e))
-    #         # 这里增加一个邮件提示模块
-    #         logger.error(e)
-    #         logger.complete()
-    #         pass
-    #     time.sleep(4)
+    # establish_connection()
+    while True:
+        try:
+            establish_connection()
+            logger.complete()
+        except Exception as e:
+            send_alarm_msg(str(e))
+            # 这里增加一个邮件提示模块
+            logger.error(e)
+            logger.complete()
+            pass
+        time.sleep(4)
 
     # while True:
     #     # try:
