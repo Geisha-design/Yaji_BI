@@ -908,11 +908,21 @@ company_list = [
 
 
 def xuanniao(theids, timeFlagA, timeFlagB):
-    user = 'dubtest'
-    passwd = 'Di3Vo#eB'
-    port = 3309
-    db = 'lit_saas_booking'
-    host = "192.168.17.12"
+    # user = 'dubtest'
+    # passwd = 'Di3Vo#eB'
+    # port = 3309
+    # db = 'lit_saas_booking'
+    # host = "192.168.17.12"
+
+
+    user = 'litsaas'
+    passwd = 'Litsaas_0607'
+    port = 3306
+    db = 'litsaas'
+    host = "rm-uf6160k88d3snm052.mysql.rds.aliyuncs.com"
+
+
+
     # 连接数据库
     conn = pymysql.connect(host=host  # 连接名称，默认127.0.0.1
                            , user=user  # 用户名
@@ -1045,18 +1055,18 @@ if __name__ == '__main__':
     excel_data = []  # 重新初始化列表
     idList = (company_list)
 
+    for i in range(0, len(idList)):
+        timeFlagA = "2020-01-01 00:00:00"
+        timeFlagB = "2025-09-01 00:00:00"
+        print("玄鸟")
+        xuanniao(idList[i], timeFlagA, timeFlagB)
+        print("*******************************************************************")
     # for i in range(0, len(idList)):
-    #     timeFlagA = "2020-01-01 00:00:00"
-    #     timeFlagB = "2025-09-01 00:00:00"
-    #     print("玄鸟")
-    #     xuanniao(idList[i], timeFlagA, timeFlagB)
-    #     print("*******************************************************************")
-    # for i in range(0, len(idList)):
-    timeFlagA = "2020-01-01 00:00:00"
-    timeFlagB = "2025-09-01 00:00:00"
-    print("玄鸟")
-    xuanniao('saila', timeFlagA, timeFlagB)
-    print("*******************************************************************")
+    # timeFlagA = "2020-01-01 00:00:00"
+    # timeFlagB = "2025-09-01 00:00:00"
+    # print("玄鸟")
+    # xuanniao('saila', timeFlagA, timeFlagB)
+    # print("*******************************************************************")
 
     # 将数据写入Excel文件
     if excel_data:
