@@ -69,27 +69,38 @@ def create_email_table_mysql():
 
             # 创建邮件表
             create_table_sql = '''
-            CREATE TABLE IF NOT EXISTS yaji_email_records (
-                id INT PRIMARY KEY,
-                message_id TEXT,
-                from_addresses TEXT,
-                content LONGTEXT,
-                content_text LONGTEXT,
-                received_time DATETIME,
-                status VARCHAR(50),
-                mail_addr VARCHAR(255),
-                rel_fba_apply_id INT,
-                subject TEXT,
-                status_str VARCHAR(100),
-                alo VARCHAR(255),
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            CREATE TABLE IF NOT EXISTS main (
+                   id INT PRIMARY KEY,
+    rel_company_id INT,
+    booking_key VARCHAR(255),
+    cds_booking_no VARCHAR(255),
+    ffc_no VARCHAR(255) NULL,
+    submit_channel VARCHAR(50),
+    phone VARCHAR(100),
+    mail_addr VARCHAR(255),
+    status VARCHAR(100),
+    remark VARCHAR(100),
+    
+    creater VARCHAR(100),
+    create_date DATETIME,
+    submit_time DATETIME NULL,
+    accepter VARCHAR(100) NULL,
+    accept_time DATETIME NULL,
+    auditer VARCHAR(100) NULL,
+    audit_time DATETIME NULL,
+    audit_exception TEXT NULL,
+    attachment VARCHAR(100) NULL,
+    submit_channel_str VARCHAR(100),
+    status_str VARCHAR(100),
+    submit_status_str varchar(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
             '''
             cursor.execute(create_table_sql)
 
         connection.commit()
-        thread_safe_print("MySQL邮件表创建成功")
+        thread_safe_print("MySQL核验主表创建成功")
 
     except Exception as e:
         thread_safe_print(f"MySQL表创建失败: {e}")
@@ -122,7 +133,7 @@ def parse_and_store_email_data_mysql(data):
             for record in records:
                 # 提取字段并处理None值
                 insert_sql = '''
-                INSERT INTO yaji_email_records (
+                INSERT INTO yaji_email_records_1 (
                     id, message_id, from_addresses, content, content_text,
                     received_time, status, mail_addr, rel_fba_apply_id, subject, status_str,alo
                 ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s)
@@ -181,7 +192,7 @@ def fetch_detailed_list_data(headers, submit_status=0, booking_keys="", cds_book
     }
 
     try:
-        response = requests.post(url, params=params, headers=headers, timeout=30)
+        response = requests.post(url, params=params, headers=headers, timeout=50)
         data = json.loads(response.text)
 
         # 解析并存储数据到MySQL
@@ -208,6 +219,68 @@ def fetch_detailed_list_data(headers, submit_status=0, booking_keys="", cds_book
         thread_safe_print(f"获取详细列表数据失败: {e}")
         return None
 
+    #
+    # headers = {
+    #     "authorization": cookieb.get('vue_admin_template_token').replace('%20', ' ')}
+    # payload = {
+    #     "pageNo": 1,
+    #     "pageSize": 100000,
+    #     "cdsBookingNo": "FBE"
+    # }
+    # # searchBookingDetailsByFilter   指令5的数据状态接口
+    # response = requests.post("https://www.yagikoifish.com/vms/fbaApply/v/getList4Page", params=payload,
+    #                          headers=headers)
+    # # thejson = json.loads(response.text)
+    # # status = thejson.get('status')
+    # # data = thejson.get('data')
+    # # print( status)
+    # # print( data)
+    #
+    # thejson = json.loads(response.text)
+    # response_msg = thejson.get('msg')
+    # response_status = thejson.get('status')
+    # data = thejson.get('data')
+    #
+    # thread_safe_print(f"API响应消息: {response_msg}")
+    # thread_safe_print(f"API响应状态: {response_status}")
+    #
+    # # 用于生成HTML报表的数据
+    # report_data = []
+    #
+    # if data:
+    #     total_records = data.get('total')
+    #     current_page = data.get('current')
+    #     page_size = data.get('size')
+    #     total_pages = data.get('pages')
+    #
+    #     thread_safe_print(f"总记录数: {total_records}")
+    #     thread_safe_print(f"当前页: {current_page}/{total_pages}")
+    #     thread_safe_print(f"本页记录数: {page_size}")
+    #
+    #     records = data.get('records', [])
+    #     thread_safe_print(f"\n解析到 {len(records)} 条记录:")
+    #
+    #     # 收集所有需要查询邮件的记录ID
+    #     records_to_process = []
+    #     for record in records:
+    #         booking_no = record.get('cdsBookingNo')
+    #         status_code = record.get('status')
+    #         submit_status = record.get('submitStatusStr')
+    #         creater = record.get('creater')
+    #         create_date = record.get('createDate')
+    #         id = record.get('id')
+    #
+
+
+
+
+
+
+
+
+
+
+
 
 # 在主函数中调用
 if __name__ == '__main__':
@@ -221,7 +294,7 @@ if __name__ == '__main__':
 
     # 获取所有数据（分页处理）
     page_no = 1
-    page_size = 200  # 调整为合适的页面大小
+    page_size = 2000  # 调整为合适的页面大小
     total_pages = 1
 
     while page_no <= total_pages:
