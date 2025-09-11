@@ -242,7 +242,7 @@ def eternal():
     # 获取所有数据（分页处理）
     page_no = 1
     page_size = 200  # 调整为合适的页面大小
-    total_pages = 4
+    total_pages = 5
 
     while page_no <= total_pages:
         thread_safe_print(f"正在获取第 {page_no} 页数据...")

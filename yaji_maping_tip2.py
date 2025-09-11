@@ -62,6 +62,8 @@ def query_alo_and_booking_mapping():
             WHERE DATE(received_time) = %s 
             AND alo IS NOT NULL 
             AND alo != '无al0信息'
+            AND status_str ='未处理'
+            
             '''
 
             cursor.execute(select_email_sql, (today,))
