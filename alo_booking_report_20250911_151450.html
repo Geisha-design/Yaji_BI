@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>亚集即时未处理邮件统计</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.92);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.8em;
+            font-weight: 300;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .header p {
+            margin: 15px 0 0 0;
+            opacity: 0.95;
+            font-size: 1.2em;
+            position: relative;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background-color: rgba(248, 249, 250, 0.85);
+            padding: 25px;
+            border-bottom: 1px solid #e9ecef;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 1em;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        .content {
+            padding: 25px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: left;
+            padding: 18px 15px;
+            font-weight: 500;
+            font-size: 1.05em;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        tr:hover {
+            background-color: #e9f7fe;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        .status-other {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        .icon {
+            margin-right: 8px;
+            font-size: 1.1em;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 25px;
+            color: #6c757d;
+            font-size: 0.95em;
+            border-top: 1px solid #e9ecef;
+            margin-top: 20px;
+            background-color: rgba(248, 249, 250, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            th, td {
+                padding: 12px 10px;
+            }
+
+            .header {
+                padding: 25px 15px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+
+        .pulse {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #ff6b6b;
+            box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7);
+            animation: pulse 2s infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7);
+            }
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 12px rgba(255, 107, 107, 0);
+            }
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(255, 107, 107, 0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-chart-line"></i> 亚集统计数据表</h1>
+            <p>基于当天邮件记录与主数据的关联分析</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number">34</div>
+                <div class="stat-label"><i class="fas fa-database"></i> 匹配记录数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number"><span class="pulse"></span></div>
+                <div class="stat-label"><i class="fas fa-sync-alt"></i> 实时数据</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">2025-09-11 15:14:50</div>
+                <div class="stat-label"><i class="far fa-clock"></i> 生成时间</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">2025-09-11</div>
+                <div class="stat-label"><i class="far fa-calendar-alt"></i> 报告日期</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <table>
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-fingerprint"></i> ID</th>
+                        <th><i class="fas fa-key"></i> Booking Key (ALO)</th>
+                        <th><i class="fas fa-file-contract"></i> CDS Booking No</th>
+                        <th><i class="fas fa-hashtag"></i> FFC No</th>
+                        <th><i class="fas fa-tasks"></i> 状态</th>
+                        <th><i class="far fa-calendar-plus"></i> 创建日期</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+        <tr>
+            <td><span class="icon">🆔</span> 11886</td>
+            <td><strong><span class="icon">🔑</span> AL0-THAPBHXBXUQNX</strong></td>
+            <td><span class="icon">📄</span> FBEFELN13148NB0</td>
+            <td><span class="icon">🔢</span> LBA4</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-05-12 14:02:11</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 21495</td>
+            <td><strong><span class="icon">🔑</span> AL0-REBXYDJF7QZFW</strong></td>
+            <td><span class="icon">📄</span> FBERTMN14732NB0</td>
+            <td><span class="icon">🔢</span> DUS2</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-07-25 15:15:57</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 21849</td>
+            <td><strong><span class="icon">🔑</span> AL0-XAPXTYHXNWSEX</strong></td>
+            <td><span class="icon">📄</span> FBEFELN14568NB0</td>
+            <td><span class="icon">🔢</span> LBA4</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-07-29 15:01:21</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 23606</td>
+            <td><strong><span class="icon">🔑</span> AL0-XNETGYTM5JU5W</strong></td>
+            <td><span class="icon">📄</span> FBEFELN15010NB0</td>
+            <td><span class="icon">🔢</span> BHX7</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-08-12 13:30:21</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 23698</td>
+            <td><strong><span class="icon">🔑</span> AL0-VFXZJ43TNYYSM</strong></td>
+            <td><span class="icon">📄</span> FBERTMN14897NB0</td>
+            <td><span class="icon">🔢</span> DTM2</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-08-12 17:16:40</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 26455</td>
+            <td><strong><span class="icon">🔑</span> AL0-VZBJWHHSC7R7E</strong></td>
+            <td><span class="icon">📄</span> FBERTMN15689NB0</td>
+            <td><span class="icon">🔢</span> DTM2</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-09-01 13:45:58</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 27194</td>
+            <td><strong><span class="icon">🔑</span> AL0-UVAWXF7QTB3TQ</strong></td>
+            <td><span class="icon">📄</span> FBERTMN15772NB0</td>
+            <td><span class="icon">🔢</span> DTM2</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-09-05 09:46:07</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 27318</td>
+            <td><strong><span class="icon">🔑</span> AL0-UR4FRC3H7UDZX</strong></td>
+            <td><span class="icon">📄</span> FBEFELN15561NB0</td>
+            <td><span class="icon">🔢</span> LBA4</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-09-05 16:45:56</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 27347</td>
+            <td><strong><span class="icon">🔑</span> AL0-XYQCNQAUJBKMG</strong></td>
+            <td><span class="icon">📄</span> FBERTMN15911NB0</td>
+            <td><span class="icon">🔢</span> DTM2</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-09-05 20:15:43</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 27457</td>
+            <td><strong><span class="icon">🔑</span> AL0-QA7C53MDWMQNW</strong></td>
+            <td><span class="icon">📄</span> FBEFELN15825NB0</td>
+            <td><span class="icon">🔢</span> LBA4</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-09-08 14:02:25</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 27757</td>
+            <td><strong><span class="icon">🔑</span> AL0-UBGPWX7RC3GSY</strong></td>
+            <td><span class="icon">📄</span> FBERTMN15580NB0</td>
+            <td><span class="icon">🔢</span> STR1</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-09-09 15:02:05</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 27788</td>
+            <td><strong><span class="icon">🔑</span> AL0-U6XF5XMEP4KXK</strong></td>
+            <td><span class="icon">📄</span> FBEFELN15973NB0</td>
+            <td><span class="icon">🔢</span> LBA4</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-09-09 16:47:45</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 27921</td>
+            <td><strong><span class="icon">🔑</span> AL0-QZUMABCBB3NYC</strong></td>
+            <td><span class="icon">📄</span> FBEFELN15930NB0</td>
+            <td><span class="icon">🔢</span> LBA4</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-09-10 11:31:43</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 27929</td>
+            <td><strong><span class="icon">🔑</span> AL0-RYE6Y4BEG6X2W</strong></td>
+            <td><span class="icon">📄</span> FBERTMN15907NB0</td>
+            <td><span class="icon">🔢</span> STR1</td>
+            <td><span class="icon">🔹</span> <span class="status-other">已提交</span></td>
+            <td><span class="icon">📅</span> 2025-09-10 11:31:43</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 27966</td>
+            <td><strong><span class="icon">🔑</span> AL0-WYMHWU2XZXXXW</strong></td>
+            <td><span class="icon">📄</span> FBERTMN15893NB0</td>
+            <td><span class="icon">🔢</span> HAJ1</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-09-10 14:16:20</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 27994</td>
+            <td><strong><span class="icon">🔑</span> AL0-QXCAZF5TMU5EY</strong></td>
+            <td><span class="icon">📄</span> FBERTMN16018NB0</td>
+            <td><span class="icon">🔢</span> DTM2</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-09-10 15:16:16</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 28005</td>
+            <td><strong><span class="icon">🔑</span> AL0-TAWXXJGH4ZEWK</strong></td>
+            <td><span class="icon">📄</span> FBEFELN15831NB0</td>
+            <td><span class="icon">🔢</span> LBA4</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-09-10 16:00:49</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 28009</td>
+            <td><strong><span class="icon">🔑</span> AL0-REHW3T5V257PX</strong></td>
+            <td><span class="icon">📄</span> FBERTMN15962NB0</td>
+            <td><span class="icon">🔢</span> DTM2</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-09-10 16:30:37</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 28014</td>
+            <td><strong><span class="icon">🔑</span> AL0-UUFXVY5ZMXY54</strong></td>
+            <td><span class="icon">📄</span> FBERTMN15885NB0</td>
+            <td><span class="icon">🔢</span> XDU5</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-09-10 16:47:52</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 28025</td>
+            <td><strong><span class="icon">🔑</span> AL0-WNTZTKBQ6A6FX</strong></td>
+            <td><span class="icon">📄</span> FBEFELN15814NB0</td>
+            <td><span class="icon">🔢</span> LBA2</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-09-10 17:02:44</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 28026</td>
+            <td><strong><span class="icon">🔑</span> AL0-TUGBWHBNYRVHK</strong></td>
+            <td><span class="icon">📄</span> FBERTMN15440NB0</td>
+            <td><span class="icon">🔢</span> HAJ1</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-09-10 17:02:44</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 28049</td>
+            <td><strong><span class="icon">🔑</span> AL0-RHVUHYQM2ZAVY</strong></td>
+            <td><span class="icon">📄</span> FBEFELN15760NB0</td>
+            <td><span class="icon">🔢</span> LBA4</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-09-10 17:47:16</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 28060</td>
+            <td><strong><span class="icon">🔑</span> AL0-VKKYYUPNDBE52</strong></td>
+            <td><span class="icon">📄</span> FBERTMN15850NB0</td>
+            <td><span class="icon">🔢</span> DTM2</td>
+            <td><span class="icon">🔹</span> <span class="status-other">已受理</span></td>
+            <td><span class="icon">📅</span> 2025-09-10 18:02:01</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 28087</td>
+            <td><strong><span class="icon">🔑</span> AL0-QXE4KK5QXZKBE</strong></td>
+            <td><span class="icon">📄</span> FBEFELN15669NB0</td>
+            <td><span class="icon">🔢</span> LBA2</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-09-11 09:15:56</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 28108</td>
+            <td><strong><span class="icon">🔑</span> AL0-T6YYWT7M37A3U</strong></td>
+            <td><span class="icon">📄</span> FBEFELN15646NB0</td>
+            <td><span class="icon">🔢</span> BHX7</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-09-11 10:00:49</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 28120</td>
+            <td><strong><span class="icon">🔑</span> AL0-RG62SUQ6WN7UU</strong></td>
+            <td><span class="icon">📄</span> FBERTMN15883NB0</td>
+            <td><span class="icon">🔢</span> HAJ1</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-09-11 10:31:07</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 28129</td>
+            <td><strong><span class="icon">🔑</span> AL0-Q2ZDMHJDKWTXS</strong></td>
+            <td><span class="icon">📄</span> FBERTMN15949NB0</td>
+            <td><span class="icon">🔢</span> DTM2</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-09-11 10:48:26</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 28130</td>
+            <td><strong><span class="icon">🔑</span> AL0-X4YGZMHAJDY2K</strong></td>
+            <td><span class="icon">📄</span> FBEFELN15659NB0</td>
+            <td><span class="icon">🔢</span> LBA4</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-09-11 10:48:26</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 28138</td>
+            <td><strong><span class="icon">🔑</span> AL0-VMBXZ2QGVY2KX</strong></td>
+            <td><span class="icon">📄</span> FBERTMN15937NB0</td>
+            <td><span class="icon">🔢</span> DTM2</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-09-11 10:48:27</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 28148</td>
+            <td><strong><span class="icon">🔑</span> AL0-UBXBRE5SFAQVK</strong></td>
+            <td><span class="icon">📄</span> FBERTMN15761NB0</td>
+            <td><span class="icon">🔢</span> HAJ1</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-09-11 11:01:34</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 28159</td>
+            <td><strong><span class="icon">🔑</span> AL0-SQA3SNCMPUQQQ</strong></td>
+            <td><span class="icon">📄</span> FBERTMN15898NB0</td>
+            <td><span class="icon">🔢</span> HAJ1</td>
+            <td><span class="icon">🔹</span> <span class="status-other">审核成功</span></td>
+            <td><span class="icon">📅</span> 2025-09-11 11:31:03</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 28166</td>
+            <td><strong><span class="icon">🔑</span> AL0-RWFTM52FXWZW6</strong></td>
+            <td><span class="icon">📄</span> FBEFELN15838NB0</td>
+            <td><span class="icon">🔢</span> LBA4</td>
+            <td><span class="icon">🔹</span> <span class="status-other">已受理</span></td>
+            <td><span class="icon">📅</span> 2025-09-11 11:52:13</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 28193</td>
+            <td><strong><span class="icon">🔑</span> AL0-X27RAZP4FESVE</strong></td>
+            <td><span class="icon">📄</span> FBEFELN15521NB0</td>
+            <td><span class="icon">🔢</span> LBA4</td>
+            <td><span class="icon">🔹</span> <span class="status-other">已受理</span></td>
+            <td><span class="icon">📅</span> 2025-09-11 13:45:30</td>
+        </tr>
+        
+        <tr>
+            <td><span class="icon">🆔</span> 28195</td>
+            <td><strong><span class="icon">🔑</span> AL0-QKRMYZA762RXQ</strong></td>
+            <td><span class="icon">📄</span> FBERTMN15628NB0</td>
+            <td><span class="icon">🔢</span> HAJ1</td>
+            <td><span class="icon">🔹</span> <span class="status-other">已受理</span></td>
+            <td><span class="icon">📅</span> 2025-09-11 13:45:30</td>
+        </tr>
+        
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            <p><i class="fas fa-robot"></i> 报表由易豹系统自动生成 | 数据来源：易豹网络科技RPA数字化执行平台</p>
+        </div>
+    </div>
+</body>
+</html>
