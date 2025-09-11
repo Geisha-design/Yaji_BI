@@ -130,7 +130,7 @@ def generate_html_report(data):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ALO与Booking映射关系报表</title>
+    <title>亚集即时未处理邮件统计</title>
     <style>
         body {{
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
