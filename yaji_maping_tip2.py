@@ -1,5 +1,8 @@
 import pymysql
 from datetime import datetime, date
+
+from Yaji_mysql_email import eternal
+from Yaji_mysql_main import saika
 from yaji_obsidian import thread_safe_print
 import os
 
@@ -631,6 +634,10 @@ function closeModal(){{
 
 # 在主函数中调用
 if __name__ == '__main__':
+
+    saika()
+    eternal()
+
     # 查询数据
     data = query_alo_and_booking_mapping()
 

@@ -301,6 +301,34 @@ def fetch_detailed_list_data(headers):
 
 # 在主函数中调用
 
+
+def saika():
+    # 首先创建主要信息表
+    create_main_table_mysql()
+    page, cookie_str = rpapageshadow()
+    headers = {
+        "authorization": cookie_str
+    }
+
+    # 获取所有数据（分页处理）
+    page_no = 1
+    page_size = 2000  # 调整为合适的页面大小
+    total_pages = 1
+
+    while page_no <= total_pages:
+        thread_safe_print(f"正在获取第 {page_no} 页数据...")
+        data = fetch_detailed_list_data(
+            headers=headers
+        )
+
+        if data and data.get('data'):
+            total_pages = data['data'].get('pages', 1)
+            thread_safe_print(f"总共 {total_pages} 页")
+
+        page_no += 1
+
+        # 添加延迟避免请求过于频繁
+        time.sleep(1)
 if __name__ == '__main__':
 
     # 首先创建主要信息表

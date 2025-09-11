@@ -226,6 +226,41 @@ def fetch_detailed_list_data(headers, submit_status=0, booking_keys="", cds_book
         return None
 
 
+def eternal():
+
+    # Re: AL0 - X4JN56B5NVGUY报关资料
+    # alo_capture('Re: AL0-X4JN56B5NVGUY报关资料 ')
+
+    # 首先创建表
+    create_email_table_mysql()
+
+    page, cookie_str = rpapageshadow()
+    headers = {
+        "authorization": cookie_str
+    }
+
+    # 获取所有数据（分页处理）
+    page_no = 1
+    page_size = 200  # 调整为合适的页面大小
+    total_pages = 4
+
+    while page_no <= total_pages:
+        thread_safe_print(f"正在获取第 {page_no} 页数据...")
+        data = fetch_detailed_list_data(
+            headers=headers,
+            page_no=page_no,
+            page_size=page_size
+        )
+
+        if data and data.get('data'):
+            # total_pages = data['data'].get('pages', 1)
+            thread_safe_print(f"总共 {total_pages} 页")
+
+        page_no += 1
+
+        # 添加延迟避免请求过于频繁
+        time.sleep(1)
+
 # 在主函数中调用
 if __name__ == '__main__':
 
