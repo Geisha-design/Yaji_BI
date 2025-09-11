@@ -14,24 +14,6 @@ MYSQL_CONFIG = {
     'database': 'yaji_db',  # 替换为你的数据库名
     'charset': 'utf8mb4'
 }
-# AL0
-# 亚马逊正则工具
-
-def alo_capture(text):
-
-    # text = "Re: Re: 【报关问题】 AL0-SVXPKX7XE4TQE 报关资料（紧急!!!）"
-
-    # 正则表达式匹配以 AL0 开头的字符串，通常格式为 AL0-后面跟大写字母和数字
-    match = re.search(r'\bAL0-[A-Z0-9]+\b', text)
-
-    if match:
-        print("提取到的编号是:", match.group())
-        return match.group()
-    else:
-        print("未找到匹配项")
-        return "无al0信息"
-
-
 
 
 def get_mysql_connection():
@@ -53,7 +35,7 @@ def get_mysql_connection():
     except Exception as e:
         thread_safe_print(f"MySQL数据库连接失败: {e}")
         return None
-def create_email_table_mysql():
+def create_main_table_mysql():
     """
     在MySQL中创建邮件表
     """
@@ -71,30 +53,33 @@ def create_email_table_mysql():
             create_table_sql = '''
             CREATE TABLE IF NOT EXISTS main (
                    id INT PRIMARY KEY,
-    rel_company_id INT,
-    booking_key VARCHAR(255),
-    cds_booking_no VARCHAR(255),
-    ffc_no VARCHAR(255) NULL,
-    submit_channel VARCHAR(50),
-    phone VARCHAR(100),
-    mail_addr VARCHAR(255),
-    status VARCHAR(100),
-    remark VARCHAR(100),
-    
-    creater VARCHAR(100),
-    create_date DATETIME,
-    submit_time DATETIME NULL,
-    accepter VARCHAR(100) NULL,
-    accept_time DATETIME NULL,
-    auditer VARCHAR(100) NULL,
-    audit_time DATETIME NULL,
-    audit_exception TEXT NULL,
-    attachment VARCHAR(100) NULL,
-    submit_channel_str VARCHAR(100),
-    status_str VARCHAR(100),
-    submit_status_str varchar(100),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                    rel_company_id INT,
+                    booking_key VARCHAR(255),
+                    cds_booking_no VARCHAR(255),
+                    ffc_no VARCHAR(255) NULL,
+                    submit_channel VARCHAR(50),
+                    phone VARCHAR(100),
+                    mail_addr VARCHAR(255),
+                    status VARCHAR(100),
+                    remark VARCHAR(100),
+                    
+                    creater VARCHAR(100),
+                    create_date DATETIME,
+                    
+                    submit_time DATETIME NULL,
+                    submit_status_str varchar(100),
+                    
+                    # accepter VARCHAR(100) NULL,
+                    # accept_time DATETIME NULL,
+                    # auditer VARCHAR(100) NULL,
+                    # audit_time DATETIME NULL,
+                    # audit_exception TEXT NULL,
+                    # attachment VARCHAR(100) NULL,
+                    # submit_channel_str VARCHAR(100),
+                    # status_str VARCHAR(100),
+                    # submit_status_str varchar(100),
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
             '''
             cursor.execute(create_table_sql)
@@ -180,113 +165,84 @@ def parse_and_store_email_data_mysql(data):
 
 
 # 修改 fetch_detailed_list_data 函数以支持MySQL数据存储
-def fetch_detailed_list_data(headers, submit_status=0, booking_keys="", cds_booking_no="", page_no=1, page_size=20):
+def fetch_detailed_list_data(headers):
     """
     获取详细列表数据的函数  https://www.yagikoifish.com/vms/fbaMail/v/getList4Page?subjectKeys=&status=&pageNo=1&pageSize=20
     """
-    url = "https://www.yagikoifish.com/vms/fbaMail/v/getList4Page"
-    params = {
-        "status": submit_status,
-        "pageNo": page_no,
-        "pageSize": page_size
+    url = "https://www.yagikoifish.com/vms/fbaApply/v/getList4Page"
+    payload = {
+        "pageNo": 1,
+        "pageSize": 100000,
+        "cdsBookingNo": "FBE"
     }
 
-    try:
-        response = requests.post(url, params=params, headers=headers, timeout=50)
-        data = json.loads(response.text)
+    # try:
+    response = requests.post(url, params=payload, headers=headers, timeout=50)
+    thejson = json.loads(response.text)
+    response_msg = thejson.get('msg')
+    response_status = thejson.get('status')
+    data = thejson.get('data')
 
-        # 解析并存储数据到MySQL
-        parse_and_store_email_data_mysql(data)
+    thread_safe_print(f"API响应消息: {response_msg}")
+    thread_safe_print(f"API响应状态: {response_status}")
+    # data = json.loads(response.text)
 
-        thread_safe_print(f"详细列表接口响应: {data.get('msg')}, 状态: {data.get('status')}")
+    if data:
+        total_records = data.get('total')
+        current_page = data.get('current')
+        page_size = data.get('size')
+        total_pages = data.get('pages')
 
-        # 打印记录详情
-        records = data.get('data', {}).get('records', [])
-        thread_safe_print(f"准备处理 {len(records)} 条记录")
+        thread_safe_print(f"总记录数: {total_records}")
+        thread_safe_print(f"当前页: {current_page}/{total_pages}")
+        thread_safe_print(f"本页记录数: {page_size}")
 
+        records = data.get('records', [])
+        thread_safe_print(f"\n解析到 {len(records)} 条记录:")
+
+        # 收集所有需要查询邮件的记录ID
+        records_to_process = []
         for record in records:
-            thread_safe_print(
-                f"ID: {record.get('id')}, "
-                f"主题: {record.get('subject')}, "
-                f"发件人: {record.get('fromAddresses')}, "
-                f"状态: {record.get('statusStr')}, "
-                f"alo: {alo_capture(record.get('subject'))}, "
-                f"接收时间: {record.get('receivedTime')}"
-            )
-
-        return data
-    except Exception as e:
-        thread_safe_print(f"获取详细列表数据失败: {e}")
-        return None
-
-    #
-    # headers = {
-    #     "authorization": cookieb.get('vue_admin_template_token').replace('%20', ' ')}
-    # payload = {
-    #     "pageNo": 1,
-    #     "pageSize": 100000,
-    #     "cdsBookingNo": "FBE"
-    # }
-    # # searchBookingDetailsByFilter   指令5的数据状态接口
-    # response = requests.post("https://www.yagikoifish.com/vms/fbaApply/v/getList4Page", params=payload,
-    #                          headers=headers)
-    # # thejson = json.loads(response.text)
-    # # status = thejson.get('status')
-    # # data = thejson.get('data')
-    # # print( status)
-    # # print( data)
-    #
-    # thejson = json.loads(response.text)
-    # response_msg = thejson.get('msg')
-    # response_status = thejson.get('status')
-    # data = thejson.get('data')
-    #
-    # thread_safe_print(f"API响应消息: {response_msg}")
-    # thread_safe_print(f"API响应状态: {response_status}")
-    #
-    # # 用于生成HTML报表的数据
-    # report_data = []
-    #
-    # if data:
-    #     total_records = data.get('total')
-    #     current_page = data.get('current')
-    #     page_size = data.get('size')
-    #     total_pages = data.get('pages')
-    #
-    #     thread_safe_print(f"总记录数: {total_records}")
-    #     thread_safe_print(f"当前页: {current_page}/{total_pages}")
-    #     thread_safe_print(f"本页记录数: {page_size}")
-    #
-    #     records = data.get('records', [])
-    #     thread_safe_print(f"\n解析到 {len(records)} 条记录:")
-    #
-    #     # 收集所有需要查询邮件的记录ID
-    #     records_to_process = []
-    #     for record in records:
-    #         booking_no = record.get('cdsBookingNo')
-    #         status_code = record.get('status')
-    #         submit_status = record.get('submitStatusStr')
-    #         creater = record.get('creater')
-    #         create_date = record.get('createDate')
-    #         id = record.get('id')
-    #
-
-
-
-
-
-
-
-
-
-
-
+            id = record.get('id')
+            relCompanyId = record.get('relCompanyId')
+            bookingKey = record.get('bookingKey')
+            booking_no = record.get('cdsBookingNo')
+            ffcNo = record.get('ffcNo')
+            submit_channel = record.get('submitChannelStr')
+            phone = record.get('phone')
+            mail_addr = record.get('mailAddr')
+            status = record.get('status')
+            remark = record.get('remark')
+            creater = record.get('creater')
+            create_date = record.get('createDate')
+            submitTime = record.get('submitTime')
+            submit_status = record.get('submitStatusStr')
+            #
+            thread_safe_print(f"cds BK号: {booking_no},"
+                              f"进仓编号: {bookingKey},"
+                              f"状态: {submit_status},"
+                              f"创建人: {creater},"
+                              f"创建时间: {create_date},"
+                              f"提交时间: {submitTime},"
+                              f"ID: {id},"
+                              f"公司关联ID：{relCompanyId},"
+                              f"状态代码: {status}"
+                              f"手机号: {phone},"
+                              f"邮箱: {mail_addr},"
+                              f"备注: {remark},"
+                              f"提交渠道: {submit_channel},"
+                              f"FFC编号: {ffcNo}"
+                              )
+    # except Exception as e:
+    #     thread_safe_print(f"获取详细列表数据失败: {e}")
+    #     return None
 
 # 在主函数中调用
-if __name__ == '__main__':
-    # 首先创建表
-    create_email_table_mysql()
 
+if __name__ == '__main__':
+
+    # 首先创建主要信息表
+    create_main_table_mysql()
     page, cookie_str = rpapageshadow()
     headers = {
         "authorization": cookie_str
@@ -300,9 +256,7 @@ if __name__ == '__main__':
     while page_no <= total_pages:
         thread_safe_print(f"正在获取第 {page_no} 页数据...")
         data = fetch_detailed_list_data(
-            headers=headers,
-            page_no=page_no,
-            page_size=page_size
+            headers=headers
         )
 
         if data and data.get('data'):
@@ -313,3 +267,6 @@ if __name__ == '__main__':
 
         # 添加延迟避免请求过于频繁
         time.sleep(1)
+
+
+
