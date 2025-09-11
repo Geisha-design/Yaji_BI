@@ -298,7 +298,7 @@ def generate_html_report(data):
         </div>
 
         <div class="footer">
-            <p>报表由Yaji系统自动生成 | 数据来源：yaji_email_records & yaji_main</p>
+            <p>报表由易豹系统自动生成 | 数据来源：易豹网络科技RPA数字化执行平台 </p>
         </div>
     </div>
 </body>
