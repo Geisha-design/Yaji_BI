@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALO与Booking映射关系报表</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        .content {
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: left;
+            padding: 15px;
+            font-weight: 500;
+        }
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        tr:hover {
+            background-color: #e9f7fe;
+            transition: background-color 0.3s;
+        }
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            display: inline-block;
+        }
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            display: inline-block;
+        }
+        .status-other {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            display: inline-block;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+            font-size: 0.9em;
+            border-top: 1px solid #e9ecef;
+            margin-top: 20px;
+        }
+        @media (max-width: 768px) {
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+            table {
+                font-size: 0.9em;
+            }
+            th, td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>亚集统计数据表</h1>
+            <p>基于当天邮件记录与主数据的关联分析</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number">7</div>
+                <div class="stat-label">匹配记录数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">2025-09-11 14:12:25</div>
+                <div class="stat-label">生成时间</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">2025-09-11</div>
+                <div class="stat-label">报告日期</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Booking Key (ALO)</th>
+                        <th>CDS Booking No</th>
+                        <th>FFC No</th>
+                        <th>状态</th>
+                        <th>创建日期</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+        <tr>
+            <td>21849</td>
+            <td><strong>AL0-XAPXTYHXNWSEX</strong></td>
+            <td>FBEFELN14568NB0</td>
+            <td>LBA4</td>
+            <td><span class="status-other">审核成功</span></td>
+            <td>2025-07-29 15:01:21</td>
+        </tr>
+        
+        <tr>
+            <td>23698</td>
+            <td><strong>AL0-VFXZJ43TNYYSM</strong></td>
+            <td>FBERTMN14897NB0</td>
+            <td>DTM2</td>
+            <td><span class="status-other">审核成功</span></td>
+            <td>2025-08-12 17:16:40</td>
+        </tr>
+        
+        <tr>
+            <td>27457</td>
+            <td><strong>AL0-QA7C53MDWMQNW</strong></td>
+            <td>FBEFELN15825NB0</td>
+            <td>LBA4</td>
+            <td><span class="status-other">审核成功</span></td>
+            <td>2025-09-08 14:02:25</td>
+        </tr>
+        
+        <tr>
+            <td>27757</td>
+            <td><strong>AL0-UBGPWX7RC3GSY</strong></td>
+            <td>FBERTMN15580NB0</td>
+            <td>STR1</td>
+            <td><span class="status-other">审核成功</span></td>
+            <td>2025-09-09 15:02:05</td>
+        </tr>
+        
+        <tr>
+            <td>27966</td>
+            <td><strong>AL0-WYMHWU2XZXXXW</strong></td>
+            <td>FBERTMN15893NB0</td>
+            <td>HAJ1</td>
+            <td><span class="status-other">审核成功</span></td>
+            <td>2025-09-10 14:16:20</td>
+        </tr>
+        
+        <tr>
+            <td>27994</td>
+            <td><strong>AL0-QXCAZF5TMU5EY</strong></td>
+            <td>FBERTMN16018NB0</td>
+            <td>DTM2</td>
+            <td><span class="status-other">审核成功</span></td>
+            <td>2025-09-10 15:16:16</td>
+        </tr>
+        
+        <tr>
+            <td>28087</td>
+            <td><strong>AL0-QXE4KK5QXZKBE</strong></td>
+            <td>FBEFELN15669NB0</td>
+            <td>LBA2</td>
+            <td><span class="status-other">审核成功</span></td>
+            <td>2025-09-11 09:15:56</td>
+        </tr>
+        
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            <p>报表由Yaji系统自动生成 | 数据来源：yaji_email_records & yaji_main</p>
+        </div>
+    </div>
+</body>
+</html>

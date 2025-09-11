@@ -51,7 +51,7 @@ def create_main_table_mysql():
 
             # 创建邮件表
             create_table_sql = '''
-            CREATE TABLE IF NOT EXISTS main (
+            CREATE TABLE IF NOT EXISTS yaji_main (
                    id INT PRIMARY KEY,
                     rel_company_id INT,
                     booking_key VARCHAR(255),
@@ -62,24 +62,13 @@ def create_main_table_mysql():
                     mail_addr VARCHAR(255),
                     status VARCHAR(100),
                     remark VARCHAR(100),
-                    
                     creater VARCHAR(100),
                     create_date DATETIME,
-                    
                     submit_time DATETIME NULL,
                     submit_status_str varchar(100),
-                    
-                    # accepter VARCHAR(100) NULL,
-                    # accept_time DATETIME NULL,
-                    # auditer VARCHAR(100) NULL,
-                    # audit_time DATETIME NULL,
-                    # audit_exception TEXT NULL,
-                    # attachment VARCHAR(100) NULL,
-                    # submit_channel_str VARCHAR(100),
-                    # status_str VARCHAR(100),
-                    # submit_status_str varchar(100),
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    UNIQUE KEY (id)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
             '''
             cursor.execute(create_table_sql)
@@ -92,14 +81,12 @@ def create_main_table_mysql():
     finally:
         connection.close()
 
-
-
-def parse_and_store_email_data_mysql(data):
+def parse_and_store_main_data_mysql(data,response_msg):
     """
-    解析邮件API返回的数据并存储到MySQL数据库
+    解析主数据API返回的数据并存储到MySQL数据库
     """
-    if not data or data.get('status') != 'success':
-        thread_safe_print("邮件数据获取失败或状态不正确")
+    if response_msg != '成功':
+        thread_safe_print("主数据获取失败或状态不正确")
         return
 
     connection = get_mysql_connection()
@@ -112,57 +99,131 @@ def parse_and_store_email_data_mysql(data):
             cursor.execute(f"USE {MYSQL_CONFIG['database']}")
 
             # 解析并插入数据
-            records = data.get('data', {}).get('records', [])
-            thread_safe_print(f"准备处理 {len(records)} 条邮件记录")
+            records = data.get('records', [])
+            thread_safe_print(f"准备处理 {len(records)} 条主记录")
 
             for record in records:
                 # 提取字段并处理None值
                 insert_sql = '''
-                INSERT INTO yaji_email_records_1 (
-                    id, message_id, from_addresses, content, content_text,
-                    received_time, status, mail_addr, rel_fba_apply_id, subject, status_str,alo
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s)
+                INSERT INTO yaji_main (
+                    id, rel_company_id, booking_key, cds_booking_no, ffc_no,
+                    submit_channel, phone, mail_addr, status, remark,
+                    creater, create_date, submit_time, submit_status_str
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 ON DUPLICATE KEY UPDATE
-                    message_id = VALUES(message_id),
-                    from_addresses = VALUES(from_addresses),
-                    content = VALUES(content),
-                    content_text = VALUES(content_text),
-                    received_time = VALUES(received_time),
-                    status = VALUES(status),
+                    rel_company_id = VALUES(rel_company_id),
+                    booking_key = VALUES(booking_key),
+                    cds_booking_no = VALUES(cds_booking_no),
+                    ffc_no = VALUES(ffc_no),
+                    submit_channel = VALUES(submit_channel),
+                    phone = VALUES(phone),
                     mail_addr = VALUES(mail_addr),
-                    rel_fba_apply_id = VALUES(rel_fba_apply_id),
-                    subject = VALUES(subject),
-                    status_str = VALUES(status_str),
-                    alo = VALUES(alo),
+                    status = VALUES(status),
+                    remark = VALUES(remark),
+                    creater = VALUES(creater),
+                    create_date = VALUES(create_date),
+                    submit_time = VALUES(submit_time),
+                    submit_status_str = VALUES(submit_status_str),
                     updated_at = CURRENT_TIMESTAMP
                 '''
 
                 values = (
                     record.get('id'),
-                    record.get('messageId'),
-                    record.get('fromAddresses'),
-                    record.get('content'),
-                    record.get('contentText'),
-                    record.get('receivedTime'),
-                    record.get('status'),
+                    record.get('relCompanyId'),
+                    record.get('bookingKey'),
+                    record.get('cdsBookingNo'),
+                    record.get('ffcNo'),
+                    record.get('submitChannelStr'),
+                    record.get('phone'),
                     record.get('mailAddr'),
-                    record.get('relFbaApplyId'),
-                    record.get('subject'),
-                    record.get('statusStr'),
-                    alo_capture(record.get('subject'))
+                    record.get('status'),
+                    record.get('remark'),
+                    record.get('creater'),
+                    record.get('createDate'),
+                    record.get('submitTime'),
+                    record.get('submitStatusStr')
                 )
 
                 cursor.execute(insert_sql, values)
 
         connection.commit()
-        thread_safe_print(f"成功存储 {len(records)} 条邮件记录到MySQL数据库")
+        thread_safe_print(f"成功存储 {len(records)} 条主记录到MySQL数据库")
 
     except Exception as e:
-        thread_safe_print(f"MySQL数据存储失败: {e}")
+        thread_safe_print(f"MySQL主数据存储失败: {e}")
         connection.rollback()
     finally:
         connection.close()
 
+# def parse_and_store_main_data_mysql(data):
+#     """
+#     解析邮件API返回的数据并存储到MySQL数据库
+#     """
+#     if not data or data.get('status') != 'success':
+#         thread_safe_print("邮件数据获取失败或状态不正确")
+#         return
+#
+#     connection = get_mysql_connection()
+#     if not connection:
+#         return
+#
+#     try:
+#         with connection.cursor() as cursor:
+#             # 使用数据库
+#             cursor.execute(f"USE {MYSQL_CONFIG['database']}")
+#
+#             # 解析并插入数据
+#             records = data.get('data', {}).get('records', [])
+#             thread_safe_print(f"准备处理 {len(records)} 条邮件记录")
+#
+#             for record in records:
+#                 # 提取字段并处理None值
+#                 insert_sql = '''
+#                 INSERT INTO yaji_main (
+#                     id, message_id, from_addresses, content, content_text,
+#                     received_time, status, mail_addr, rel_fba_apply_id, subject, status_str,alo
+#                 ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s)
+#                 ON DUPLICATE KEY UPDATE
+#                     message_id = VALUES(message_id),
+#                     from_addresses = VALUES(from_addresses),
+#                     content = VALUES(content),
+#                     content_text = VALUES(content_text),
+#                     received_time = VALUES(received_time),
+#                     status = VALUES(status),
+#                     mail_addr = VALUES(mail_addr),
+#                     rel_fba_apply_id = VALUES(rel_fba_apply_id),
+#                     subject = VALUES(subject),
+#                     status_str = VALUES(status_str),
+#                     alo = VALUES(alo),
+#                     updated_at = CURRENT_TIMESTAMP
+#                 '''
+#
+#                 values = (
+#                     record.get('id'),
+#                     record.get('messageId'),
+#                     record.get('fromAddresses'),
+#                     record.get('content'),
+#                     record.get('contentText'),
+#                     record.get('receivedTime'),
+#                     record.get('status'),
+#                     record.get('mailAddr'),
+#                     record.get('relFbaApplyId'),
+#                     record.get('subject'),
+#                     record.get('statusStr'),
+#                     alo_capture(record.get('subject'))
+#                 )
+#
+#                 cursor.execute(insert_sql, values)
+#
+#         connection.commit()
+#         thread_safe_print(f"成功存储 {len(records)} 条邮件记录到MySQL数据库")
+#
+#     except Exception as e:
+#         thread_safe_print(f"MySQL数据存储失败: {e}")
+#         connection.rollback()
+#     finally:
+#         connection.close()
+#
 
 # 修改 fetch_detailed_list_data 函数以支持MySQL数据存储
 def fetch_detailed_list_data(headers):
@@ -176,66 +237,67 @@ def fetch_detailed_list_data(headers):
         "cdsBookingNo": "FBE"
     }
 
-    # try:
-    response = requests.post(url, params=payload, headers=headers, timeout=50)
-    thejson = json.loads(response.text)
-    response_msg = thejson.get('msg')
-    response_status = thejson.get('status')
-    data = thejson.get('data')
+    try:
+        response = requests.post(url, params=payload, headers=headers, timeout=50)
+        thejson = json.loads(response.text)
+        response_msg = thejson.get('msg')
+        response_status = thejson.get('status')
+        data = thejson.get('data')
 
-    thread_safe_print(f"API响应消息: {response_msg}")
-    thread_safe_print(f"API响应状态: {response_status}")
-    # data = json.loads(response.text)
+        thread_safe_print(f"API响应消息: {response_msg}")
+        thread_safe_print(f"API响应状态: {response_status}")
+        # data = json.loads(response.text)
 
-    if data:
-        total_records = data.get('total')
-        current_page = data.get('current')
-        page_size = data.get('size')
-        total_pages = data.get('pages')
+        if data:
+            parse_and_store_main_data_mysql(data,response_msg)
+            total_records = data.get('total')
+            current_page = data.get('current')
+            page_size = data.get('size')
+            total_pages = data.get('pages')
 
-        thread_safe_print(f"总记录数: {total_records}")
-        thread_safe_print(f"当前页: {current_page}/{total_pages}")
-        thread_safe_print(f"本页记录数: {page_size}")
+            thread_safe_print(f"总记录数: {total_records}")
+            thread_safe_print(f"当前页: {current_page}/{total_pages}")
+            thread_safe_print(f"本页记录数: {page_size}")
 
-        records = data.get('records', [])
-        thread_safe_print(f"\n解析到 {len(records)} 条记录:")
+            records = data.get('records', [])
+            thread_safe_print(f"\n解析到 {len(records)} 条记录:")
 
-        # 收集所有需要查询邮件的记录ID
-        records_to_process = []
-        for record in records:
-            id = record.get('id')
-            relCompanyId = record.get('relCompanyId')
-            bookingKey = record.get('bookingKey')
-            booking_no = record.get('cdsBookingNo')
-            ffcNo = record.get('ffcNo')
-            submit_channel = record.get('submitChannelStr')
-            phone = record.get('phone')
-            mail_addr = record.get('mailAddr')
-            status = record.get('status')
-            remark = record.get('remark')
-            creater = record.get('creater')
-            create_date = record.get('createDate')
-            submitTime = record.get('submitTime')
-            submit_status = record.get('submitStatusStr')
-            #
-            thread_safe_print(f"cds BK号: {booking_no},"
-                              f"进仓编号: {bookingKey},"
-                              f"状态: {submit_status},"
-                              f"创建人: {creater},"
-                              f"创建时间: {create_date},"
-                              f"提交时间: {submitTime},"
-                              f"ID: {id},"
-                              f"公司关联ID：{relCompanyId},"
-                              f"状态代码: {status}"
-                              f"手机号: {phone},"
-                              f"邮箱: {mail_addr},"
-                              f"备注: {remark},"
-                              f"提交渠道: {submit_channel},"
-                              f"FFC编号: {ffcNo}"
-                              )
-    # except Exception as e:
-    #     thread_safe_print(f"获取详细列表数据失败: {e}")
-    #     return None
+            # 收集所有需要查询邮件的记录ID
+            records_to_process = []
+            for record in records:
+                id = record.get('id')
+                relCompanyId = record.get('relCompanyId')
+                bookingKey = record.get('bookingKey')
+                booking_no = record.get('cdsBookingNo')
+                ffcNo = record.get('ffcNo')
+                submit_channel = record.get('submitChannelStr')
+                phone = record.get('phone')
+                mail_addr = record.get('mailAddr')
+                status = record.get('status')
+                remark = record.get('remark')
+                creater = record.get('creater')
+                create_date = record.get('createDate')
+                submitTime = record.get('submitTime')
+                submit_status = record.get('submitStatusStr')
+                #
+                thread_safe_print(f"cds BK号: {booking_no},"
+                                  f"进仓编号: {bookingKey},"
+                                  f"状态: {submit_status},"
+                                  f"创建人: {creater},"
+                                  f"创建时间: {create_date},"
+                                  f"提交时间: {submitTime},"
+                                  f"ID: {id},"
+                                  f"公司关联ID：{relCompanyId},"
+                                  f"状态代码: {status}"
+                                  f"手机号: {phone},"
+                                  f"邮箱: {mail_addr},"
+                                  f"备注: {remark},"
+                                  f"提交渠道: {submit_channel},"
+                                  f"FFC编号: {ffcNo}"
+                                  )
+    except Exception as e:
+        thread_safe_print(f"获取详细列表数据失败: {e}")
+        return None
 
 # 在主函数中调用
 
