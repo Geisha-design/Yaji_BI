@@ -724,7 +724,417 @@ def send_report_via_email(recipients, data):
 
 
 
-# 替换主函数中的代码为以下内容
+# 在文件末尾添加以下新函数
+
+def query_all_alo_records():
+    """
+    查询yaji_email_records中当天的所有alo记录（包括已处理和未处理）
+    """
+    connection = get_mysql_connection()
+    if not connection:
+        return []
+
+    try:
+        with connection.cursor() as cursor:
+            # 使用数据库
+            cursor.execute(f"USE {MYSQL_CONFIG['database']}")
+
+            # 获取今天的日期
+            today = date.today()
+
+            # 查询yaji_email_records中当天的所有记录，获取alo字段
+            select_email_sql = '''
+            SELECT id, alo, received_time, status_str
+            FROM yaji_email_records 
+            WHERE DATE(received_time) = %s 
+            AND alo IS NOT NULL 
+            AND alo != '无al0信息'
+            ORDER BY received_time DESC
+            '''
+
+
+
+            cursor.execute(select_email_sql, (today,))
+            email_records = cursor.fetchall()
+
+            if not email_records:
+                thread_safe_print("今天没有找到任何ALO邮件记录")
+                return []
+
+            thread_safe_print(f"找到 {len(email_records)} 个ALO邮件记录")
+
+            return email_records
+
+    except Exception as e:
+        thread_safe_print(f"查询所有ALO记录失败: {e}")
+        return []
+    finally:
+        connection.close()
+
+
+def generate_all_alo_html_report(data):
+    """
+    生成包含当天所有ALO号的HTML报表
+    """
+    # 获取当前时间
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    # 生成表格行
+    table_rows = ""
+    for record in data:
+        # 根据状态设置样式
+        status_class = "status-other"
+        status_icon = "🔹"
+        if record['status_str'] == '已处理':
+            status_class = "status-active"
+            status_icon = "✅"
+        elif record['status_str'] == '未处理':
+            status_class = "status-pending"
+            status_icon = "⏳"
+
+        table_rows += f'''
+        <tr>
+            <td><span class="icon">🆔</span> {record['id']}</td>
+            <td><strong><span class="icon">🔑</span> {record['alo']}</strong></td>
+            <td><span class="icon">📥</span> {record['received_time'].strftime('%Y-%m-%d %H:%M:%S') if record['received_time'] else 'N/A'}</td>
+            <td><span class="icon">{status_icon}</span> <span class="{status_class}">{record['status_str'] or '未知'}</span></td>
+        </tr>
+        '''
+
+    # HTML模板
+    html_content = f'''<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>亚集当天所有ALO邮件统计</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #333;
+            min-height: 100vh;
+        }}
+
+        @keyframes gradientBG {{
+            0% {{
+                background-position: 0% 50%;
+            }}
+            50% {{
+                background-position: 100% 50%;
+            }}
+            100% {{
+                background-position: 0% 50%;
+            }}
+        }}
+
+        .container {{
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.92);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }}
+
+        .header {{
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }}
+
+        .header::before {{
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+        }}
+
+        .header h1 {{
+            margin: 0;
+            font-size: 2.8em;
+            font-weight: 300;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+        }}
+
+        .header p {{
+            margin: 15px 0 0 0;
+            opacity: 0.95;
+            font-size: 1.2em;
+            position: relative;
+        }}
+
+        .stats {{
+            display: flex;
+            justify-content: space-around;
+            background-color: rgba(248, 249, 250, 0.85);
+            padding: 25px;
+            border-bottom: 1px solid #e9ecef;
+            flex-wrap: wrap;
+        }}
+
+        .stat-item {{
+            text-align: center;
+            padding: 15px;
+            flex: 1;
+            min-width: 200px;
+        }}
+
+        .stat-number {{
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }}
+
+        .stat-label {{
+            color: #6c757d;
+            font-size: 1em;
+            margin-top: 8px;
+            font-weight: 500;
+        }}
+
+        .content {{
+            padding: 25px;
+        }}
+
+        table {{
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+        }}
+
+        th {{
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: left;
+            padding: 18px 15px;
+            font-weight: 500;
+            font-size: 1.05em;
+        }}
+
+        td {{
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }}
+
+        tr:nth-child(even) {{
+            background-color: #f8f9fa;
+        }}
+
+        tr:hover {{
+            background-color: #e9f7fe;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }}
+
+        .status-active {{
+            background-color: #d4edda;
+            color: #155724;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            display: inline-block;
+            font-weight: 500;
+        }}
+
+        .status-pending {{
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            display: inline-block;
+            font-weight: 500;
+        }}
+
+        .status-other {{
+            background-color: #d1ecf1;
+            color: #0c5460;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            display: inline-block;
+            font-weight: 500;
+        }}
+
+        .icon {{
+            margin-right: 8px;
+            font-size: 1.1em;
+        }}
+
+        .footer {{
+            text-align: center;
+            padding: 25px;
+            color: #6c757d;
+            font-size: 0.95em;
+            border-top: 1px solid #e9ecef;
+            margin-top: 20px;
+            background-color: rgba(248, 249, 250, 0.6);
+        }}
+
+        @media (max-width: 768px) {{
+            .stats {{
+                flex-direction: column;
+                gap: 15px;
+            }}
+
+            table {{
+                font-size: 0.9em;
+            }}
+
+            th, td {{
+                padding: 12px 10px;
+            }}
+
+            .header {{
+                padding: 25px 15px;
+            }}
+
+            .header h1 {{
+                font-size: 2em;
+            }}
+        }}
+
+        .pulse {{
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #ff6b6b;
+            box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7);
+            animation: pulse 2s infinite;
+            margin-right: 8px;
+        }}
+
+        @keyframes pulse {{
+            0% {{
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7);
+            }}
+            70% {{
+                transform: scale(1);
+                box-shadow: 0 0 0 12px rgba(255, 107, 107, 0);
+            }}
+            100% {{
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(255, 107, 107, 0);
+            }}
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-envelope"></i> 亚集当天所有ALO邮件统计</h1>
+            <p>包含已处理和未处理的所有ALO邮件记录</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number">{len(data)}</div>
+                <div class="stat-label"><i class="fas fa-database"></i> 总记录数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number"><span class="pulse"></span></div>
+                <div class="stat-label"><i class="fas fa-sync-alt"></i> 实时数据</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{current_time}</div>
+                <div class="stat-label"><i class="far fa-clock"></i> 生成时间</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{date.today().strftime("%Y-%m-%d")}</div>
+                <div class="stat-label"><i class="far fa-calendar-alt"></i> 报告日期</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <table>
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-fingerprint"></i> ID</th>
+                        <th><i class="fas fa-key"></i> ALO编号</th>
+                        <th><i class="fas fa-download"></i> 接收时间</th>
+                        <th><i class="fas fa-upload"></i> 处理时间</th>
+                        <th><i class="fas fa-tasks"></i> 状态</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {table_rows}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            <p><i class="fas fa-robot"></i> 报表由易豹系统自动生成 | 数据来源：易豹网络科技RPA数字化执行平台</p>
+        </div>
+    </div>
+</body>
+</html>
+'''
+
+    return html_content
+
+
+def send_all_alo_report_via_email(recipients, data):
+    """
+    生成并发送包含当天所有ALO号的报表邮件
+
+    Args:
+        recipients (list): 收件人邮箱列表
+        data (list): 报表数据
+
+    Returns:
+        bool: 发送成功返回True，否则返回False
+    """
+    if not data:
+        thread_safe_print("没有ALO数据可发送邮件")
+        return False
+
+    try:
+        # 生成HTML报表
+        html_content = generate_all_alo_html_report(data)
+
+        # 设置邮件主题
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        subject = f"亚集当天所有ALO邮件统计报表 - {current_time}"
+
+        # 发送邮件
+        success = send_email_report(html_content, recipients, subject)
+
+        if success:
+            thread_safe_print("所有ALO邮件统计报表发送成功")
+            return True
+        else:
+            thread_safe_print("所有ALO邮件统计报表发送失败")
+            return False
+
+    except Exception as e:
+        thread_safe_print(f"发送所有ALO邮件统计报表过程中出错: {e}")
+        return False
+
 
 if __name__ == '__main__':
     saika()
@@ -732,14 +1142,15 @@ if __name__ == '__main__':
 
     # 查询数据
     data = query_alo_and_booking_mapping()
-
+    # 查询所有ALO记录
+    all_alo_data = query_all_alo_records()
     # 生成HTML报表
     if data:
         # 定义收件人列表
         recipients = [
-            'qiyz@smartebao.com', # 替换为实际收件人邮箱
-            'luye@smartebao.com',  # 可以添加多个收件人
-            'zhuke@smartebao.com'
+            'qiyz@smartebao.com' # 替换为实际收件人邮箱
+            # 'luye@smartebao.com',  # 可以添加多个收件人
+            # 'zhuke@smartebao.com'
         ]
 
         # 发送报表邮件
@@ -757,27 +1168,18 @@ if __name__ == '__main__':
             thread_safe_print("报表生成和发送均失败")
     else:
         thread_safe_print("没有数据可生成报表")
+# ***************************************************
+    # 发送当天所有ALO号邮件统计报表
+    if all_alo_data:
+        all_alo_email_sent = send_all_alo_report_via_email(recipients, all_alo_data)
+
+        if all_alo_email_sent:
+            thread_safe_print("当天所有ALO号邮件统计报表发送成功")
+        else:
+            thread_safe_print("当天所有ALO号邮件统计报表发送失败")
+    else:
+        thread_safe_print("没有ALO邮件数据可生成报表")
 
 
 
-# # 在主函数中调用
-# if __name__ == '__main__':
-#
-#     saika()
-#     eternal()
-#
-#     # 查询数据
-#     data = query_alo_and_booking_mapping()
-#
-#     # 生成HTML报表
-#     if data:
-#         html_content = generate_html_report2(data)
-#         # 保存报表
-#         filename = save_html_report(html_content)
-#
-#         if filename:
-#             thread_safe_print(f"报表生成成功: {filename}")
-#         else:
-#             thread_safe_print("报表生成失败")
-#     else:
-#         thread_safe_print("没有数据可生成报表")
+
