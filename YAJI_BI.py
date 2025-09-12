@@ -3008,8 +3008,8 @@ def send_combined_report_with_attachments(recipients, data_dict):
 
 # 修改主程序部分
 if __name__ == '__main__':
-    # saika()
-    # eternal()
+    saika()
+    eternal()
 
     # 查询数据
     data = query_alo_and_booking_mapping()
@@ -3023,9 +3023,9 @@ if __name__ == '__main__':
     # 定义收件人列表
     recipients = [
         'qiyz@smartebao.com'
-        # ,
-        # 'luye@smartebao.com',
-        # 'zhuke@smartebao.com'
+        ,
+        'luye@smartebao.com',
+        'zhuke@smartebao.com'
     ]
 
     # 准备综合报表数据
