@@ -667,7 +667,8 @@ def send_email_report(html_content, recipients, subject=None):
         msg = MIMEMultipart('alternative')
         msg['From'] = f"{EMAIL_CONFIG['sender_name']} <{EMAIL_CONFIG['sender_email']}>"
         msg['To'] = ', '.join(recipients)
-        msg['Subject'] = subject or f"亚集即时未处理邮件统计报表 - {date.today().strftime('%Y-%m-%d')}"
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        msg['Subject'] = subject or f"亚集即时未处理邮件统计报表 - {current_time}"
 
         # 添加HTML内容
         html_part = MIMEText(html_content, 'html', 'utf-8')
