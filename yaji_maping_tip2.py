@@ -5,6 +5,13 @@ from Yaji_mysql_email import eternal
 from Yaji_mysql_main import saika
 from yaji_obsidian import thread_safe_print
 import os
+# 在文件顶部导入所需模块
+import smtplib
+import mimetypes
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
 
 # MySQL数据库配置
 MYSQL_CONFIG = {
@@ -632,11 +639,93 @@ function closeModal(){{
 """
     return html_content
 
+# 在文件末尾添加以下函数
+
+def send_email_report(html_content, recipients, subject=None):
+    """
+    发送HTML报表邮件给指定用户
+
+    Args:
+        html_content (str): HTML邮件内容
+        recipients (list): 收件人邮箱列表
+        subject (str): 邮件主题，默认为自动生成
+
+    Returns:
+        bool: 发送成功返回True，否则返回False
+    """
+    # 邮件配置
+    EMAIL_CONFIG = {
+        'smtp_server': 'smtp.em.dingtalk.com',  # 阿里云邮箱SMTP服务器，可根据实际邮箱服务商修改
+        'smtp_port': 25,
+        'sender_email': 'qiyz@smartebao.com',  # 替换为您的邮箱
+        'sender_password': 'HHnDyT5v7beJ9Mog',  # 替换为您的邮箱密码或授权码
+        'sender_name': 'qiyz@smartebao.com'
+    }
+
+    try:
+        # 创建邮件对象
+        msg = MIMEMultipart('alternative')
+        msg['From'] = f"{EMAIL_CONFIG['sender_name']} <{EMAIL_CONFIG['sender_email']}>"
+        msg['To'] = ', '.join(recipients)
+        msg['Subject'] = subject or f"亚集即时未处理邮件统计报表 - {date.today().strftime('%Y-%m-%d')}"
+
+        # 添加HTML内容
+        html_part = MIMEText(html_content, 'html', 'utf-8')
+        msg.attach(html_part)
+
+        # 连接SMTP服务器并发送邮件
+        server = smtplib.SMTP(EMAIL_CONFIG['smtp_server'], EMAIL_CONFIG['smtp_port'])
+        server.starttls()
+        server.login(EMAIL_CONFIG['sender_email'], EMAIL_CONFIG['sender_password'])
+        server.send_message(msg)
+        server.quit()
+
+        thread_safe_print(f"邮件已成功发送至: {', '.join(recipients)}")
+        return True
+
+    except Exception as e:
+        thread_safe_print(f"发送邮件失败: {e}")
+        return False
 
 
-# 在主函数中调用
+def send_report_via_email(recipients, data):
+    """
+    生成并发送报表邮件
+
+    Args:
+        recipients (list): 收件人邮箱列表
+        data (list): 报表数据
+
+    Returns:
+        bool: 发送成功返回True，否则返回False
+    """
+    if not data:
+        thread_safe_print("没有数据可发送邮件")
+        return False
+
+    try:
+        # 生成HTML报表
+        html_content = generate_html_report2(data)
+
+        # 发送邮件
+        success = send_email_report(html_content, recipients)
+
+        if success:
+            thread_safe_print("报表邮件发送成功")
+            return True
+        else:
+            thread_safe_print("报表邮件发送失败")
+            return False
+
+    except Exception as e:
+        thread_safe_print(f"发送报表邮件过程中出错: {e}")
+        return False
+
+
+
+# 替换主函数中的代码为以下内容
+
 if __name__ == '__main__':
-
     saika()
     eternal()
 
@@ -645,13 +734,49 @@ if __name__ == '__main__':
 
     # 生成HTML报表
     if data:
+        # 定义收件人列表
+        recipients = [
+            'qiyz@smartebao.com', # 替换为实际收件人邮箱
+            'luye@smartebao.com',  # 可以添加多个收件人
+            'zhuke@smartebao.com'
+        ]
+
+        # 发送报表邮件
+        email_sent = send_report_via_email(recipients, data)
+
+        # 同时保存本地报表文件
         html_content = generate_html_report2(data)
-        # 保存报表
         filename = save_html_report(html_content)
 
-        if filename:
-            thread_safe_print(f"报表生成成功: {filename}")
+        if filename and email_sent:
+            thread_safe_print(f"报表生成并发送成功: {filename}")
+        elif filename:
+            thread_safe_print(f"报表生成成功但邮件发送失败: {filename}")
         else:
-            thread_safe_print("报表生成失败")
+            thread_safe_print("报表生成和发送均失败")
     else:
         thread_safe_print("没有数据可生成报表")
+
+
+
+# # 在主函数中调用
+# if __name__ == '__main__':
+#
+#     saika()
+#     eternal()
+#
+#     # 查询数据
+#     data = query_alo_and_booking_mapping()
+#
+#     # 生成HTML报表
+#     if data:
+#         html_content = generate_html_report2(data)
+#         # 保存报表
+#         filename = save_html_report(html_content)
+#
+#         if filename:
+#             thread_safe_print(f"报表生成成功: {filename}")
+#         else:
+#             thread_safe_print("报表生成失败")
+#     else:
+#         thread_safe_print("没有数据可生成报表")
