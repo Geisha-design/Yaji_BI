@@ -18,6 +18,26 @@ from email import encoders
 import pandas as pd
 from io import BytesIO
 import xlsxwriter
+
+import schedule
+import time
+
+# def job():
+#     print("每半小时执行一次的任务")
+#     # 在这里添加你的具体任务逻辑
+#
+# # 设置每半小时执行一次
+# schedule.every(30).minutes.do(job)
+#
+# # 或者设置具体的半小时间隔时间点
+# # schedule.every().hour.at(":00").do(job)
+# # schedule.every().hour.at(":30").do(job)
+#
+# while True:
+#     schedule.run_pending()
+#     time.sleep(1)
+
+
 # MySQL数据库配置
 MYSQL_CONFIG = {
     'host': 'localhost',
@@ -3006,8 +3026,62 @@ def send_combined_report_with_attachments(recipients, data_dict):
         return False
 
 
+
+# import schedule
+# import time
+#
+# def job():
+#     print("每半小时执行一次的任务")
+#     # 在这里添加你的具体任务逻辑
+#
+# # 设置每半小时执行一次
+# schedule.every(30).minutes.do(job)
+#
+# # 或者设置具体的半小时间隔时间点
+# # schedule.every().hour.at(":00").do(job)
+# # schedule.every().hour.at(":30").do(job)
+#
+# while True:
+#     schedule.run_pending()
+#     time.sleep(1)
+
+# **********************************************
+
+# import threading
+#
+# def job():
+#     print("每半小时执行一次的任务")
+#     # 在这里添加你的具体任务逻辑
+#
+#     # 重新调度下一次执行
+#     timer = threading.Timer(1800, job)  # 1800秒 = 30分钟
+#     timer.start()
+#
+# # 启动第一次执行
+# timer = threading.Timer(1800, job)
+# timer.start()
+
+# **********************************************
+
+
+# import asyncio
+#
+# async def job():
+#     while True:
+#         print("每半小时执行一次的任务")
+#         # 在这里添加你的具体任务逻辑
+#         await asyncio.sleep(1800)  # 等待30分钟
+#
+# # 运行异步任务
+# asyncio.run(job())
+
+# **********************************************
+
+
+
+
 # 修改主程序部分
-if __name__ == '__main__':
+def main():
     saika()
     eternal()
 
@@ -3025,7 +3099,8 @@ if __name__ == '__main__':
         'qiyz@smartebao.com'
         ,
         'luye@smartebao.com',
-        'zhuke@smartebao.com'
+        'zhuke@smartebao.com',
+        'wangk@smartebao.com'
     ]
 
     # 准备综合报表数据
@@ -3127,3 +3202,21 @@ if __name__ == '__main__':
     # # 发送当天无ALO信息的邮件记录报表
     # if no_alo_data:
     #     no_alo_email_sent = send_no_alo_report_via_email(recipients, no_alo_data)
+
+
+def job():
+    print("每半小时执行一次的任务")
+    # 在这里添加你的具体任务逻辑
+    main()
+
+
+if __name__ == '__main__':
+    # 设置每半小时执行一次
+    schedule.every(1).minutes.do(job)
+
+    # 或者设置具体的半小时间隔时间点
+    # schedule.every().hour.at(":00").do(job)
+    # schedule.every().hour.at(":30").do(job)
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
