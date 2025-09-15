@@ -3212,7 +3212,7 @@ def job():
 
 if __name__ == '__main__':
     # 设置每半小时执行一次
-    schedule.every(1).minutes.do(job)
+    schedule.every(30).minutes.do(job)
 
     # 或者设置具体的半小时间隔时间点
     # schedule.every().hour.at(":00").do(job)

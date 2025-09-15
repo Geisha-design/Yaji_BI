@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>亚集即时未处理邮件统计</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+:root {
+  --bg-light: #f6f8fb;
+  --bg-dark: #121826;
+  --card-light: rgba(255,255,255,0.92);
+  --card-dark: rgba(24,28,36,0.92);
+  --text-light: #222;
+  --text-dark: #eee;
+}
+body {
+  margin:0; font-family:"Segoe UI",sans-serif;
+  background: var(--bg-light);
+  color: var(--text-light);
+  transition: background .3s,color .3s;
+}
+[data-theme="dark"] body {
+  background: var(--bg-dark);
+  color: var(--text-dark);
+}
+.container {
+  max-width:1200px; margin:20px auto;
+  background: var(--card-light);
+  border-radius:12px; padding:20px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.1);
+  transition: background .3s;
+}
+[data-theme="dark"] .container {
+  background: var(--card-dark);
+}
+.header {
+  display:flex;justify-content:space-between;align-items:center;
+}
+.theme-toggle {
+  cursor:pointer; border:none; background:#667eea;color:white;
+  padding:8px 14px;border-radius:8px;font-size:14px;
+}
+.stats {
+  display:flex;justify-content:space-around;flex-wrap:wrap;margin:20px 0;
+}
+.stat-item {
+  padding:10px;text-align:center;min-width:160px;
+}
+.stat-number {font-size:1.8em;font-weight:700;color:#667eea;}
+table {
+  width:100%;border-collapse:collapse;margin-top:15px;
+}
+th,td {
+  padding:12px;text-align:left;border-bottom:1px solid #ddd;
+}
+tr:hover {
+  background:#f1f5ff;cursor:pointer;
+}
+.status-active {color:#155724;background:#d4edda;padding:4px 10px;border-radius:12px;}
+.status-pending {color:#856404;background:#fff3cd;padding:4px 10px;border-radius:12px;}
+.status-other {color:#0c5460;background:#d1ecf1;padding:4px 10px;border-radius:12px;}
+/* 弹窗 */
+.modal {
+  display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.6);align-items:center;justify-content:center;
+}
+.modal-content {
+  background:white;padding:20px;border-radius:10px;max-width:500px;width:90%;
+}
+[data-theme="dark"] .modal-content {
+  background:#1f2533;color:#fff;
+}
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2><i class="fas fa-chart-line"></i> 亚集统计报表</h2>
+      <button class="theme-toggle" onclick="toggleTheme()">切换主题</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat-item">
+        <div class="stat-number">17</div>
+        <div>匹配记录数</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">2025-09-15 11:29:34</div>
+        <div>生成时间</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">2025-09-15</div>
+        <div>报告日期</div>
+      </div>
+    </div>
+
+    <input type="text" id="search" placeholder="🔍 搜索 Booking Key..." style="width:100%;padding:10px;margin:10px 0;border-radius:8px;border:1px solid #ccc;">
+
+    <table id="report-table">
+      <thead>
+        <tr>
+          <th>ID</th><th>Booking Key</th><th>CDS No</th><th>FFC No</th><th>状态</th><th>创建日期</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr onclick="showDetails('23599','AL0-XYAKP6AY5GMKE','FBERTMN15101NB0','DTM2','审核成功','2025-08-12 12:15:19')">
+            <td>23599</td>
+            <td>AL0-XYAKP6AY5GMKE</td>
+            <td>FBERTMN15101NB0</td>
+            <td>DTM2</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-08-12 12:15:19</td>
+        </tr>
+        
+        <tr onclick="showDetails('25752','AL0-UXCEUXBBQ6KJE','FBERTMN15486NB0','DTM2','审核成功','2025-08-26 18:01:18')">
+            <td>25752</td>
+            <td>AL0-UXCEUXBBQ6KJE</td>
+            <td>FBERTMN15486NB0</td>
+            <td>DTM2</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-08-26 18:01:18</td>
+        </tr>
+        
+        <tr onclick="showDetails('27614','AL0-QUHBWXNWXNEV4','FBERTMN15928NB0','DTM2','审核成功','2025-09-08 19:45:57')">
+            <td>27614</td>
+            <td>AL0-QUHBWXNWXNEV4</td>
+            <td>FBERTMN15928NB0</td>
+            <td>DTM2</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-08 19:45:57</td>
+        </tr>
+        
+        <tr onclick="showDetails('27878','AL0-XQUFWK5G5VMDY','FBERTMN15817NB0','HAJ1','审核成功','2025-09-10 10:32:32')">
+            <td>27878</td>
+            <td>AL0-XQUFWK5G5VMDY</td>
+            <td>FBERTMN15817NB0</td>
+            <td>HAJ1</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-10 10:32:32</td>
+        </tr>
+        
+        <tr onclick="showDetails('28413','AL0-XW2X2ZS6BUQWG','FBEFELN15947NB0','BHX7','已受理','2025-09-12 15:32:49')">
+            <td>28413</td>
+            <td>AL0-XW2X2ZS6BUQWG</td>
+            <td>FBEFELN15947NB0</td>
+            <td>BHX7</td>
+            <td><span class="status-other">🔹 已受理</span></td>
+            <td>2025-09-12 15:32:49</td>
+        </tr>
+        
+        <tr onclick="showDetails('28421','AL0-TK7EKEYGT6B4K','FBERTMN15991NB0','XSC1','已受理','2025-09-12 15:46:42')">
+            <td>28421</td>
+            <td>AL0-TK7EKEYGT6B4K</td>
+            <td>FBERTMN15991NB0</td>
+            <td>XSC1</td>
+            <td><span class="status-other">🔹 已受理</span></td>
+            <td>2025-09-12 15:46:42</td>
+        </tr>
+        
+        <tr onclick="showDetails('28449','AL0-VAAE3H22FAAXX','FBEFELN15966NB0','XBH9','已受理','2025-09-12 17:31:17')">
+            <td>28449</td>
+            <td>AL0-VAAE3H22FAAXX</td>
+            <td>FBEFELN15966NB0</td>
+            <td>XBH9</td>
+            <td><span class="status-other">🔹 已受理</span></td>
+            <td>2025-09-12 17:31:17</td>
+        </tr>
+        
+        <tr onclick="showDetails('28455','AL0-TXCQM6TXTNFMM','FBERTMN15707NB0','DTM2','已受理','2025-09-12 17:45:48')">
+            <td>28455</td>
+            <td>AL0-TXCQM6TXTNFMM</td>
+            <td>FBERTMN15707NB0</td>
+            <td>DTM2</td>
+            <td><span class="status-other">🔹 已受理</span></td>
+            <td>2025-09-12 17:45:48</td>
+        </tr>
+        
+        <tr onclick="showDetails('28471','AL0-SQRFCSNBFDWUE','FBEFELN15929NB0','BHX7','已受理','2025-09-12 18:46:24')">
+            <td>28471</td>
+            <td>AL0-SQRFCSNBFDWUE</td>
+            <td>FBEFELN15929NB0</td>
+            <td>BHX7</td>
+            <td><span class="status-other">🔹 已受理</span></td>
+            <td>2025-09-12 18:46:24</td>
+        </tr>
+        
+        <tr onclick="showDetails('28473','AL0-SWBZQZYWMPY6X','FBERTMN15931NB0','DTM2','已受理','2025-09-12 18:46:25')">
+            <td>28473</td>
+            <td>AL0-SWBZQZYWMPY6X</td>
+            <td>FBERTMN15931NB0</td>
+            <td>DTM2</td>
+            <td><span class="status-other">🔹 已受理</span></td>
+            <td>2025-09-12 18:46:25</td>
+        </tr>
+        
+        <tr onclick="showDetails('28474','AL0-VRFPHA7N3RKT4','FBERTMN15863NB0','DTM2','审核成功','2025-09-12 19:15:37')">
+            <td>28474</td>
+            <td>AL0-VRFPHA7N3RKT4</td>
+            <td>FBERTMN15863NB0</td>
+            <td>DTM2</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-12 19:15:37</td>
+        </tr>
+        
+        <tr onclick="showDetails('28487','AL0-UVXCBFD65XRFW','FBERTMN15927NB0','HAJ1','已受理','2025-09-13 17:02:26')">
+            <td>28487</td>
+            <td>AL0-UVXCBFD65XRFW</td>
+            <td>FBERTMN15927NB0</td>
+            <td>HAJ1</td>
+            <td><span class="status-other">🔹 已受理</span></td>
+            <td>2025-09-13 17:02:26</td>
+        </tr>
+        
+        <tr onclick="showDetails('28488','AL0-QTCBXGDX2X3HC','FBEFELN15959NB0','LBA4','已受理','2025-09-13 17:02:26')">
+            <td>28488</td>
+            <td>AL0-QTCBXGDX2X3HC</td>
+            <td>FBEFELN15959NB0</td>
+            <td>LBA4</td>
+            <td><span class="status-other">🔹 已受理</span></td>
+            <td>2025-09-13 17:02:26</td>
+        </tr>
+        
+        <tr onclick="showDetails('28489','AL0-UR4J4A4YKBHAS','FBERTMN15968NB0','DTM2','已受理','2025-09-13 17:02:26')">
+            <td>28489</td>
+            <td>AL0-UR4J4A4YKBHAS</td>
+            <td>FBERTMN15968NB0</td>
+            <td>DTM2</td>
+            <td><span class="status-other">🔹 已受理</span></td>
+            <td>2025-09-13 17:02:26</td>
+        </tr>
+        
+        <tr onclick="showDetails('28490','AL0-QNM3A7FW24EU2','FBEFELN16129NB0','LBA4','已受理','2025-09-13 17:02:26')">
+            <td>28490</td>
+            <td>AL0-QNM3A7FW24EU2</td>
+            <td>FBEFELN16129NB0</td>
+            <td>LBA4</td>
+            <td><span class="status-other">🔹 已受理</span></td>
+            <td>2025-09-13 17:02:26</td>
+        </tr>
+        
+        <tr onclick="showDetails('28539','AL0-X4576A3EXJSCC','FBERTMN16070NB0','DTM2','已受理','2025-09-15 10:35:24')">
+            <td>28539</td>
+            <td>AL0-X4576A3EXJSCC</td>
+            <td>FBERTMN16070NB0</td>
+            <td>DTM2</td>
+            <td><span class="status-other">🔹 已受理</span></td>
+            <td>2025-09-15 10:35:24</td>
+        </tr>
+        
+        <tr onclick="showDetails('28566','AL0-XXXTR5AXMAFK2','FBERTMN15788NB0','HAJ1','已提交','2025-09-15 11:03:16')">
+            <td>28566</td>
+            <td>AL0-XXXTR5AXMAFK2</td>
+            <td>FBERTMN15788NB0</td>
+            <td>HAJ1</td>
+            <td><span class="status-other">🔹 已提交</span></td>
+            <td>2025-09-15 11:03:16</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 详情弹窗 -->
+  <div class="modal" id="detailModal">
+    <div class="modal-content">
+      <h3>记录详情</h3>
+      <p id="detailBody"></p>
+      <button onclick="closeModal()">关闭</button>
+    </div>
+  </div>
+
+<script>
+function toggleTheme(){
+  const html=document.documentElement;
+  const theme=html.getAttribute("data-theme")==="dark"?"light":"dark";
+  html.setAttribute("data-theme",theme);
+}
+
+document.getElementById("search").addEventListener("keyup",function(){
+  let filter=this.value.toLowerCase();
+  let rows=document.querySelectorAll("#report-table tbody tr");
+  rows.forEach(r=>{
+    r.style.display=r.innerText.toLowerCase().includes(filter)?"":"none";
+  });
+});
+
+
+function closeModal(){
+  document.getElementById("detailModal").style.display="none";
+}
+</script>
+</body>
+</html>
