@@ -3211,12 +3211,39 @@ def job():
 
 
 if __name__ == '__main__':
-    # 设置每半小时执行一次
-    schedule.every(30).minutes.do(job)
-
-    # 或者设置具体的半小时间隔时间点
-    # schedule.every().hour.at(":00").do(job)
-    # schedule.every().hour.at(":30").do(job)
     while True:
-        schedule.run_pending()
-        time.sleep(1)
+        main()
+        time.sleep(1800)
+
+
+
+
+# # 使用秒表示30分钟
+# THIRTY_MINUTES_IN_SECONDS = 1800
+#
+# # 在定时任务中使用
+# import threading
+# import schedule
+# import time
+#
+# # 方法1: threading.Timer (单位是秒)
+# timer = threading.Timer(1800, job)  # 1800秒 = 30分钟
+#
+# # 方法2: schedule库
+# schedule.every(30).minutes.do(job)  # 每30分钟执行一次
+#
+# # 方法3: time.sleep
+# time.sleep(1800)  # 暂停30分钟
+
+
+
+    # main()
+    # # 设置每半小时执行一次
+    # schedule.every(30).minutes.do(job)
+    #
+    # # 或者设置具体的半小时间隔时间点
+    # # schedule.every().hour.at(":00").do(job)
+    # # schedule.every().hour.at(":30").do(job)
+    # while True:
+    #     schedule.run_pending()
+    #     time.sleep(1)
