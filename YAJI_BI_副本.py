@@ -5,7 +5,7 @@ import tempfile
 import os
 from email.mime.application import MIMEApplication
 from Yaji_mysql_email import eternal
-from Yaji_mysql_main import saika, saika_fba
+from Yaji_mysql_main import saika
 from yaji_obsidian import thread_safe_print
 import os
 # 在文件顶部导入所需模块
@@ -2316,6 +2316,81 @@ def send_no_alo_report_via_email(recipients, data):
 
 
 
+# if __name__ == '__main__':
+#     saika()
+#     eternal()
+#
+#     # 查询数据
+#     data = query_alo_and_booking_mapping()
+#     # 查询所有ALO记录
+#     all_alo_data = query_all_alo_records()
+#     # 查询有FBE单子的ALO记录
+#     alo_with_fbe_data = query_alo_with_fbe_records()
+#     # 查询无ALO信息的邮件记录
+#     no_alo_data = query_no_alo_records()
+#
+#     # 生成HTML报表
+#     if data:
+#         # 定义收件人列表
+#         recipients = [
+#             'qiyz@smartebao.com'
+#             , # 替换为实际收件人邮箱
+#             'luye@smartebao.com',  # 可以添加多个收件人
+#             'zhuke@smartebao.com'
+#         ]
+#
+#         # 发送报表邮件
+#         email_sent = send_report_via_email(recipients, data)
+#
+#         # 同时保存本地报表文件
+#         html_content = generate_html_report2(data)
+#         filename = save_html_report(html_content)
+#
+#         if filename and email_sent:
+#             thread_safe_print(f"报表生成并发送成功: {filename}")
+#         elif filename:
+#             thread_safe_print(f"报表生成成功但邮件发送失败: {filename}")
+#         else:
+#             thread_safe_print("报表生成和发送均失败")
+#     else:
+#         thread_safe_print("没有数据可生成报表")
+# # ***************************************************
+#     # 发送当天所有ALO号邮件统计报表
+#     if all_alo_data:
+#         all_alo_email_sent = send_all_alo_report_via_email(recipients, all_alo_data)
+#
+#         if all_alo_email_sent:
+#             thread_safe_print("当天所有ALO号邮件统计报表发送成功")
+#         else:
+#             thread_safe_print("当天所有ALO号邮件统计报表发送失败")
+#     else:
+#         thread_safe_print("没有ALO邮件数据可生成报表")
+#
+# # ***************************************************
+#     # 发送当天所有有对应fbe 归属于易豹应当处理的邮件统计报表
+#     # 发送当天有FBE单子的ALO记录报表
+#     if alo_with_fbe_data:
+#         alo_with_fbe_email_sent = send_alo_with_fbe_report_via_email(recipients, alo_with_fbe_data)
+#
+#         if alo_with_fbe_email_sent:
+#             thread_safe_print("当天有FBE单子的ALO记录报表发送成功")
+#         else:
+#             thread_safe_print("当天有FBE单子的ALO记录报表发送失败")
+#     else:
+#         thread_safe_print("没有有FBE单子的ALO记录可生成报表")
+#     # ***************************************************# ***************************************************
+#     # 发送当天无ALO信息的邮件记录报表
+#     if no_alo_data:
+#         no_alo_email_sent = send_no_alo_report_via_email(recipients, no_alo_data)
+#
+#         if no_alo_email_sent:
+#             thread_safe_print("当天无ALO信息邮件记录报表发送成功")
+#         else:
+#             thread_safe_print("当天无ALO信息邮件记录报表发送失败")
+#     else:
+#         thread_safe_print("没有无ALO信息的邮件记录可生成报表")
+
+
 def generate_combined_html_report(data_dict):
     """
     生成包含所有报表的综合HTML报表
@@ -2952,11 +3027,62 @@ def send_combined_report_with_attachments(recipients, data_dict):
 
 
 
+# import schedule
+# import time
+#
+# def job():
+#     print("每半小时执行一次的任务")
+#     # 在这里添加你的具体任务逻辑
+#
+# # 设置每半小时执行一次
+# schedule.every(30).minutes.do(job)
+#
+# # 或者设置具体的半小时间隔时间点
+# # schedule.every().hour.at(":00").do(job)
+# # schedule.every().hour.at(":30").do(job)
+#
+# while True:
+#     schedule.run_pending()
+#     time.sleep(1)
+
+# **********************************************
+
+# import threading
+#
+# def job():
+#     print("每半小时执行一次的任务")
+#     # 在这里添加你的具体任务逻辑
+#
+#     # 重新调度下一次执行
+#     timer = threading.Timer(1800, job)  # 1800秒 = 30分钟
+#     timer.start()
+#
+# # 启动第一次执行
+# timer = threading.Timer(1800, job)
+# timer.start()
+
+# **********************************************
+
+
+# import asyncio
+#
+# async def job():
+#     while True:
+#         print("每半小时执行一次的任务")
+#         # 在这里添加你的具体任务逻辑
+#         await asyncio.sleep(1800)  # 等待30分钟
+#
+# # 运行异步任务
+# asyncio.run(job())
+
+# **********************************************
+
+
+
 
 # 修改主程序部分
 def main():
     saika()
-    saika_fba()
     eternal()
 
     # 查询数据
@@ -3017,6 +3143,67 @@ def main():
 
 
 
+# # 修改主程序部分
+# if __name__ == '__main__':
+#     # saika()
+#     # eternal()
+#
+#     # 查询数据
+#     data = query_alo_and_booking_mapping()
+#     # 查询所有ALO记录
+#     all_alo_data = query_all_alo_records()
+#     # 查询有FBE单子的ALO记录
+#     alo_with_fbe_data = query_alo_with_fbe_records()
+#     # 查询无ALO信息的邮件记录
+#     no_alo_data = query_no_alo_records()
+#
+#     # 定义收件人列表
+#     recipients = [
+#         'qiyz@smartebao.com'
+#         # ,
+#         # 'luye@smartebao.com',
+#         # 'zhuke@smartebao.com'
+#     ]
+#
+#     # 准备综合报表数据
+#     combined_data = {
+#         'alo_booking': data,
+#         'all_alo': all_alo_data,
+#         'alo_with_fbe': alo_with_fbe_data,
+#         'no_alo': no_alo_data
+#     }
+#
+#     # 发送综合报表邮件(含附件)
+#     combined_email_sent = send_combined_report_with_attachments(recipients, combined_data)
+#
+#     if combined_email_sent:
+#         thread_safe_print("综合报表邮件(含附件)发送成功")
+#     else:
+#         thread_safe_print("综合报表邮件(含附件)发送失败")
+#
+#     # 如果需要，也可以单独保存各报表
+#     if data:
+#         html_content = generate_html_report2(data)
+#         filename = save_html_report(html_content)
+#         if filename:
+#             thread_safe_print(f"ALO映射报表已保存: {filename}")
+
+    # ***************************************************
+    # 发送当天所有ALO号邮件统计报表
+    # if all_alo_data:
+    #     all_alo_email_sent = send_all_alo_report_via_email(recipients, all_alo_data)
+    #
+    # # ***************************************************
+    # # 发送当天有FBE单子的ALO记录报表
+    # if alo_with_fbe_data:
+    #     alo_with_fbe_email_sent = send_alo_with_fbe_report_via_email(recipients, alo_with_fbe_data)
+    #
+    # # ***************************************************
+    # # 发送当天无ALO信息的邮件记录报表
+    # if no_alo_data:
+    #     no_alo_email_sent = send_no_alo_report_via_email(recipients, no_alo_data)
+
+
 def job():
     print("每半小时执行一次的任务")
     # 在这里添加你的具体任务逻辑
@@ -3029,3 +3216,34 @@ if __name__ == '__main__':
         time.sleep(1800)
 
 
+
+
+# # 使用秒表示30分钟
+# THIRTY_MINUTES_IN_SECONDS = 1800
+#
+# # 在定时任务中使用
+# import threading
+# import schedule
+# import time
+#
+# # 方法1: threading.Timer (单位是秒)
+# timer = threading.Timer(1800, job)  # 1800秒 = 30分钟
+#
+# # 方法2: schedule库
+# schedule.every(30).minutes.do(job)  # 每30分钟执行一次
+#
+# # 方法3: time.sleep
+# time.sleep(1800)  # 暂停30分钟
+
+
+
+    # main()
+    # # 设置每半小时执行一次
+    # schedule.every(30).minutes.do(job)
+    #
+    # # 或者设置具体的半小时间隔时间点
+    # # schedule.every().hour.at(":00").do(job)
+    # # schedule.every().hour.at(":30").do(job)
+    # while True:
+    #     schedule.run_pending()
+    #     time.sleep(1)
