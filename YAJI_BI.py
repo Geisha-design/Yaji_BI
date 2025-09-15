@@ -101,9 +101,24 @@ def _convert_data_to_excel(data_dict):
                     no_alo_df[col] = no_alo_df[col].dt.strftime('%Y-%m-%d %H:%M:%S')
             no_alo_df.to_excel(writer, sheet_name='无ALO信息邮件', index=False)
 
+
+
+        # 转换在主表中都不存在的ALO记录数据
+        if data_dict.get('alo_not_in_main'):
+            alo_not_in_main_df = pd.DataFrame(data_dict['alo_not_in_main'])
+            # 处理datetime对象
+            for col in alo_not_in_main_df.columns:
+                if pd.api.types.is_datetime64_any_dtype(alo_not_in_main_df[col]):
+                    alo_not_in_main_df[col] = alo_not_in_main_df[col].dt.strftime('%Y-%m-%d %H:%M:%S')
+            alo_not_in_main_df.to_excel(writer, sheet_name='主表中不存在的ALO', index=False)
+
     # 重置缓冲区指针到开始位置
     excel_buffer.seek(0)
     return excel_buffer
+
+
+
+
 
 
 def send_combined_report_with_attachments_and_excel(recipients, data_dict):
@@ -2315,7 +2330,6 @@ def send_no_alo_report_via_email(recipients, data):
         return False
 
 
-
 def generate_combined_html_report(data_dict):
     """
     生成包含所有报表的综合HTML报表
@@ -2334,6 +2348,8 @@ def generate_combined_html_report(data_dict):
     all_alo_content = _generate_all_alo_section(data_dict.get('all_alo', []))
     alo_with_fbe_content = _generate_alo_with_fbe_section(data_dict.get('alo_with_fbe', []))
     no_alo_content = _generate_no_alo_section(data_dict.get('no_alo', []))
+    # 新增部分
+    alo_not_in_main_content = _generate_alo_not_in_main_section(data_dict.get('alo_not_in_main', []))
 
     # 综合HTML模板
     html_content = f'''<!DOCTYPE html>
@@ -2618,6 +2634,10 @@ def generate_combined_html_report(data_dict):
                 <div class="stat-label"><i class="fas fa-question-circle"></i> 无ALO信息</div>
             </div>
             <div class="stat-item">
+                <div class="stat-number">{len(data_dict.get('alo_not_in_main', []))}</div>
+                <div class="stat-label"><i class="fas fa-exclamation-triangle"></i> 主表中不存在</div>
+            </div>
+            <div class="stat-item">
                 <div class="stat-number">{current_time}</div>
                 <div class="stat-label"><i class="far fa-clock"></i> 生成时间</div>
             </div>
@@ -2659,6 +2679,14 @@ def generate_combined_html_report(data_dict):
                 </div>
                 {no_alo_content}
             </div>
+            
+            <!-- 在主表中都不存在的ALO记录部分 -->
+            <div class="section">
+                <div class="section-header">
+                    <i class="fas fa-exclamation-triangle"></i> 主表中都不存在的ALO记录
+                </div>
+                {alo_not_in_main_content}
+            </div>
         </div>
 
         <div class="footer">
@@ -2669,6 +2697,404 @@ def generate_combined_html_report(data_dict):
 </html>
 '''
     return html_content
+
+# def generate_combined_html_report(data_dict):
+#     """
+#     生成包含所有报表的综合HTML报表
+#
+#     Args:
+#         data_dict (dict): 包含各类报表数据的字典
+#
+#     Returns:
+#         str: HTML内容
+#     """
+#     # 获取当前时间
+#     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+#
+#     # 生成各部分报表内容
+#     alo_booking_content = _generate_alo_booking_section(data_dict.get('alo_booking', []))
+#     all_alo_content = _generate_all_alo_section(data_dict.get('all_alo', []))
+#     alo_with_fbe_content = _generate_alo_with_fbe_section(data_dict.get('alo_with_fbe', []))
+#     no_alo_content = _generate_no_alo_section(data_dict.get('no_alo', []))
+#     # 新增部分
+#     alo_not_in_main_content = _generate_alo_not_in_main_section(data_dict.get('alo_not_in_main', []))
+#     # 综合HTML模板
+#     html_content = f'''<!DOCTYPE html>
+# <html lang="zh-CN">
+# <head>
+#     <meta charset="UTF-8">
+#     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+#     <title>亚集RPA数字化报表</title>
+#     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+#     <style>
+#         body {{
+#             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+#             margin: 0;
+#             padding: 20px;
+#             background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+#             background-size: 400% 400%;
+#             animation: gradientBG 15s ease infinite;
+#             color: #333;
+#             min-height: 100vh;
+#         }}
+#
+#         @keyframes gradientBG {{
+#             0% {{
+#                 background-position: 0% 50%;
+#             }}
+#             50% {{
+#                 background-position: 100% 50%;
+#             }}
+#             100% {{
+#                 background-position: 0% 50%;
+#             }}
+#         }}
+#
+#         .container {{
+#             max-width: 1200px;
+#             margin: 0 auto;
+#             background-color: rgba(255, 255, 255, 0.92);
+#             border-radius: 15px;
+#             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+#             overflow: hidden;
+#             backdrop-filter: blur(10px);
+#             border: 1px solid rgba(255, 255, 255, 0.2);
+#         }}
+#
+#         .header {{
+#             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+#             color: white;
+#             padding: 40px;
+#             text-align: center;
+#             position: relative;
+#             overflow: hidden;
+#         }}
+#
+#         .header::before {{
+#             content: "";
+#             position: absolute;
+#             top: -50%;
+#             left: -50%;
+#             width: 200%;
+#             height: 200%;
+#             background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+#             transform: rotate(30deg);
+#         }}
+#
+#         .header h1 {{
+#             margin: 0;
+#             font-size: 2.8em;
+#             font-weight: 300;
+#             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+#             position: relative;
+#         }}
+#
+#         .header p {{
+#             margin: 15px 0 0 0;
+#             opacity: 0.95;
+#             font-size: 1.2em;
+#             position: relative;
+#         }}
+#
+#         .stats {{
+#             display: flex;
+#             justify-content: space-around;
+#             background-color: rgba(248, 249, 250, 0.85);
+#             padding: 25px;
+#             border-bottom: 1px solid #e9ecef;
+#             flex-wrap: wrap;
+#         }}
+#
+#         .stat-item {{
+#             text-align: center;
+#             padding: 15px;
+#             flex: 1;
+#             min-width: 200px;
+#         }}
+#
+#         .stat-number {{
+#             font-size: 2.5em;
+#             font-weight: bold;
+#             color: #667eea;
+#             text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+#         }}
+#
+#         .stat-label {{
+#             color: #6c757d;
+#             font-size: 1em;
+#             margin-top: 8px;
+#             font-weight: 500;
+#         }}
+#
+#         .content {{
+#             padding: 25px;
+#         }}
+#
+#         .section {{
+#             margin-bottom: 40px;
+#             border: 1px solid #e9ecef;
+#             border-radius: 10px;
+#             overflow: hidden;
+#         }}
+#
+#         .section-header {{
+#             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+#             color: white;
+#             padding: 15px 20px;
+#             font-size: 1.3em;
+#             font-weight: 500;
+#         }}
+#
+#         table {{
+#             width: 100%;
+#             border-collapse: collapse;
+#             margin-top: 20px;
+#             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+#             border-radius: 12px;
+#             overflow: hidden;
+#             background: white;
+#         }}
+#
+#         th {{
+#             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+#             color: white;
+#             text-align: left;
+#             padding: 18px 15px;
+#             font-weight: 500;
+#             font-size: 1.05em;
+#         }}
+#
+#         td {{
+#             padding: 15px;
+#             border-bottom: 1px solid #e9ecef;
+#             transition: all 0.3s ease;
+#         }}
+#
+#         tr:nth-child(even) {{
+#             background-color: #f8f9fa;
+#         }}
+#
+#         tr:hover {{
+#             background-color: #e9f7fe;
+#             transform: translateY(-2px);
+#             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+#             transition: all 0.3s ease;
+#         }}
+#
+#         .status-active {{
+#             background-color: #d4edda;
+#             color: #155724;
+#             padding: 6px 12px;
+#             border-radius: 20px;
+#             font-size: 0.9em;
+#             display: inline-block;
+#             font-weight: 500;
+#         }}
+#
+#         .status-pending {{
+#             background-color: #fff3cd;
+#             color: #856404;
+#             padding: 6px 12px;
+#             border-radius: 20px;
+#             font-size: 0.9em;
+#             display: inline-block;
+#             font-weight: 500;
+#         }}
+#
+#         .status-other {{
+#             background-color: #d1ecf1;
+#             color: #0c5460;
+#             padding: 6px 12px;
+#             border-radius: 20px;
+#             font-size: 0.9em;
+#             display: inline-block;
+#             font-weight: 500;
+#         }}
+#
+#         .icon {{
+#             margin-right: 8px;
+#             font-size: 1.1em;
+#         }}
+#
+#         .footer {{
+#             text-align: center;
+#             padding: 25px;
+#             color: #6c757d;
+#             font-size: 0.95em;
+#             border-top: 1px solid #e9ecef;
+#             margin-top: 20px;
+#             background-color: rgba(248, 249, 250, 0.6);
+#         }}
+#
+#         @media (max-width: 768px) {{
+#             .stats {{
+#                 flex-direction: column;
+#                 gap: 15px;
+#             }}
+#
+#             table {{
+#                 font-size: 0.9em;
+#             }}
+#
+#             th, td {{
+#                 padding: 12px 10px;
+#             }}
+#
+#             .header {{
+#                 padding: 25px 15px;
+#             }}
+#
+#             .header h1 {{
+#                 font-size: 2em;
+#             }}
+#         }}
+#
+#         .pulse {{
+#             display: inline-block;
+#             width: 12px;
+#             height: 12px;
+#             border-radius: 50%;
+#             background-color: #ff6b6b;
+#             box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7);
+#             animation: pulse 2s infinite;
+#             margin-right: 8px;
+#         }}
+#
+#         @keyframes pulse {{
+#             0% {{
+#                 transform: scale(0.95);
+#                 box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7);
+#             }}
+#             70% {{
+#                 transform: scale(1);
+#                 box-shadow: 0 0 0 12px rgba(255, 107, 107, 0);
+#             }}
+#             100% {{
+#                 transform: scale(0.95);
+#                 box-shadow: 0 0 0 0 rgba(255, 107, 107, 0);
+#             }}
+#         }}
+#     </style>
+# </head>
+# <body>
+#     <div class="container">
+#         <div class="header">
+#             <h1><i class="fas fa-robot"></i> 亚集RPA数字化报表</h1>
+#             <p>综合统计分析报告</p>
+#         </div>
+#
+#         <div class="stats">
+#             <div class="stat-item">
+#                 <div class="stat-number">{len(data_dict.get('alo_booking', []))}</div>
+#                 <div class="stat-label"><i class="fas fa-link"></i> ALO映射记录</div>
+#             </div>
+#             <div class="stat-item">
+#                 <div class="stat-number">{len(data_dict.get('all_alo', []))}</div>
+#                 <div class="stat-label"><i class="fas fa-envelope"></i> 总ALO邮件</div>
+#             </div>
+#             <div class="stat-item">
+#                 <div class="stat-number">{len(data_dict.get('alo_with_fbe', []))}</div>
+#                 <div class="stat-label"><i class="fas fa-file-invoice"></i> 有FBE单子</div>
+#             </div>
+#             <div class="stat-item">
+#                 <div class="stat-number">{len(data_dict.get('no_alo', []))}</div>
+#                 <div class="stat-label"><i class="fas fa-question-circle"></i> 无ALO信息</div>
+#             </div>
+#             <div class="stat-item">
+#                 <div class="stat-number">{current_time}</div>
+#                 <div class="stat-label"><i class="far fa-clock"></i> 生成时间</div>
+#             </div>
+#             <div class="stat-item">
+#                 <div class="stat-number">{date.today().strftime("%Y-%m-%d")}</div>
+#                 <div class="stat-label"><i class="far fa-calendar-alt"></i> 报告日期</div>
+#             </div>
+#         </div>
+#
+#         <div class="content">
+#             <!-- ALO与Booking映射部分 -->
+#             <div class="section">
+#                 <div class="section-header">
+#                     <i class="fas fa-link"></i> ALO与Booking映射关系
+#                 </div>
+#                 {alo_booking_content}
+#             </div>
+#
+#             <!-- 所有ALO记录部分 -->
+#             <div class="section">
+#                 <div class="section-header">
+#                     <i class="fas fa-envelope"></i> 当天所有ALO邮件统计
+#                 </div>
+#                 {all_alo_content}
+#             </div>
+#
+#             <!-- 有FBE单子的ALO记录部分 -->
+#             <div class="section">
+#                 <div class="section-header">
+#                     <i class="fas fa-file-invoice"></i> 有FBE单子的ALO记录
+#                 </div>
+#                 {alo_with_fbe_content}
+#             </div>
+#
+#             <!-- 无ALO信息的邮件记录部分 -->
+#             <div class="section">
+#                 <div class="section-header">
+#                     <i class="fas fa-question-circle"></i> 无ALO信息的邮件记录
+#                 </div>
+#                 {no_alo_content}
+#             </div>
+#         </div>
+#
+#         <div class="footer">
+#             <p><i class="fas fa-robot"></i> 报表由易豹系统自动生成 | 数据来源：易豹网络科技RPA数字化执行平台</p>
+#         </div>
+#     </div>
+# </body>
+# </html>
+# '''
+#     return html_content
+
+def _generate_alo_not_in_main_section(data):
+    """生成在主表中都不存在的ALO记录部分"""
+    if not data:
+        return '<p style="text-align: center; padding: 20px;">暂无数据</p>'
+
+    table_rows = ""
+    for record in data:
+        status_class = "status-other"
+        status_icon = "🔹"
+        if record['status_str'] == '已处理':
+            status_class = "status-active"
+            status_icon = "✅"
+        elif record['status_str'] == '未处理':
+            status_class = "status-pending"
+            status_icon = "⏳"
+
+        table_rows += f'''
+        <tr>
+            <td><span class="icon">🆔</span> {record['id']}</td>
+            <td><strong><span class="icon">🔑</span> {record['alo']}</strong></td>
+            <td><span class="icon">✉️</span> {record['subject'] or 'N/A'}</td>
+            <td><span class="icon">📥</span> {record['received_time'].strftime('%Y-%m-%d %H:%M:%S') if record['received_time'] else 'N/A'}</td>
+            <td><span class="icon">{status_icon}</span> <span class="{status_class}">{record['status_str'] or '未知'}</span></td>
+        </tr>
+        '''
+
+    return f'''
+    <table>
+        <thead>
+            <tr>
+                <th><i class="fas fa-fingerprint"></i> ID</th>
+                <th><i class="fas fa-key"></i> ALO编号</th>
+                <th><i class="fas fa-envelope"></i> 邮件主题</th>
+                <th><i class="fas fa-download"></i> 接收时间</th>
+                <th><i class="fas fa-tasks"></i> 状态</th>
+            </tr>
+        </thead>
+        <tbody>
+            {table_rows}
+        </tbody>
+    </table>
+    '''
 
 
 def _generate_alo_booking_section(data):
@@ -2951,6 +3377,84 @@ def send_combined_report_with_attachments(recipients, data_dict):
         return False
 
 
+def query_alo_not_in_main_tables():
+    """
+    查询yaji_email_records中当天的alo记录，
+    这些记录在yaji_main和yaji_main_fba表中都不存在
+    """
+    connection = get_mysql_connection()
+    if not connection:
+        return []
+
+    try:
+        with connection.cursor() as cursor:
+            # 使用数据库
+            cursor.execute(f"USE {MYSQL_CONFIG['database']}")
+
+            # 获取今天的日期
+            today = date.today()
+
+            # 查询yaji_email_records中当天的记录，获取alo字段
+            select_email_sql = '''
+            SELECT id, alo, received_time, status_str, subject
+            FROM yaji_email_records 
+            WHERE DATE(received_time) = %s 
+            AND alo IS NOT NULL 
+            AND alo != '无al0信息'
+            AND status_str = '未处理'
+            '''
+
+            cursor.execute(select_email_sql, (today,))
+            email_records = cursor.fetchall()
+
+            if not email_records:
+                thread_safe_print("今天没有找到任何邮件记录")
+                return []
+
+            # 提取所有alo值
+            alo_list = [record['alo'] for record in email_records]
+
+            if not alo_list:
+                return []
+
+            # 在yaji_main中查找存在的alo
+            placeholders = ','.join(['%s'] * len(alo_list))
+            select_main_sql = f'''
+            SELECT DISTINCT booking_key 
+            FROM yaji_main 
+            WHERE booking_key IN ({placeholders})
+            '''
+
+            cursor.execute(select_main_sql, alo_list)
+            main_existing = cursor.fetchall()
+            main_keys = {record['booking_key'] for record in main_existing}
+
+            # 在yaji_main_fba中查找存在的alo
+            select_main_fba_sql = f'''
+            SELECT DISTINCT booking_key 
+            FROM yaji_main_fba 
+            WHERE booking_key IN ({placeholders})
+            '''
+
+            cursor.execute(select_main_fba_sql, alo_list)
+            main_fba_existing = cursor.fetchall()
+            main_fba_keys = {record['booking_key'] for record in main_fba_existing}
+
+            # 找出在两个表中都不存在的alo记录
+            existing_keys = main_keys.union(main_fba_keys)
+            not_existing_records = [
+                record for record in email_records
+                if record['alo'] not in existing_keys
+            ]
+
+            thread_safe_print(f"找到 {len(not_existing_records)} 条在主表中都不存在的ALO记录")
+            return not_existing_records
+
+    except Exception as e:
+        thread_safe_print(f"查询在主表中不存在的ALO记录失败: {e}")
+        return []
+    finally:
+        connection.close()
 
 
 # 修改主程序部分
@@ -2967,6 +3471,8 @@ def main():
     alo_with_fbe_data = query_alo_with_fbe_records()
     # 查询无ALO信息的邮件记录
     no_alo_data = query_no_alo_records()
+    # 查询在主表中都不存在的ALO记录
+    alo_not_in_main_data = query_alo_not_in_main_tables()
 
     # 定义收件人列表
     recipients = [
@@ -2982,7 +3488,8 @@ def main():
         'alo_booking': data,
         'all_alo': all_alo_data,
         'alo_with_fbe': alo_with_fbe_data,
-        'no_alo': no_alo_data
+        'no_alo': no_alo_data,
+        'alo_not_in_main': alo_not_in_main_data  # 新增数据
     }
 
     # 发送综合报表邮件(含HTML和Excel附件)
