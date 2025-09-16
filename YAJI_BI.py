@@ -312,8 +312,9 @@ def query_alo_and_booking_mapping():
             # 使用IN查询提高效率
             placeholders = ','.join(['%s'] * len(alo_list))
             select_main_sql = f'''
-            SELECT id, booking_key, cds_booking_no, ffc_no, submit_status_str, create_date
-            FROM yaji_main 
+            SELECT er.id, er.booking_key, er.cds_booking_no, er.ffc_no, er.submit_status_str, er.create_date,m.subject
+            FROM yaji_main er
+            INNER JOIN yaji_email_records m ON m.alo = er.booking_key
             WHERE booking_key IN ({placeholders})
             '''
 
@@ -675,8 +676,6 @@ def save_html_report(html_content, filename=None):
     except Exception as e:
         thread_safe_print(f"保存HTML报表失败: {e}")
         return None
-
-
 def generate_html_report2(data):
     # # 确保以下变量都已正确定义
     # id = data.get('id', '')
@@ -706,13 +705,14 @@ def generate_html_report2(data):
             status_icon = "⏳"
 
         table_rows += f'''
-        <tr onclick="showDetails('{record['id']}','{record['booking_key']}','{record['cds_booking_no'] or 'N/A'}','{record['ffc_no'] or 'N/A'}','{record['submit_status_str'] or '未知'}','{record['create_date'].strftime('%Y-%m-%d %H:%M:%S') if record['create_date'] else 'N/A'}')">
+        <tr onclick="showDetails('{record['id']}','{record['booking_key']}','{record['cds_booking_no'] or 'N/A'}','{record['ffc_no'] or 'N/A'}','{record['submit_status_str'] or '未知'}','{record['create_date'].strftime('%Y-%m-%d %H:%M:%S') if record['create_date'] else 'N/A'}','{record['subject'] or 'N/A'}')">
             <td>{record['id']}</td>
             <td>{record['booking_key']}</td>
             <td>{record['cds_booking_no'] or 'N/A'}</td>
             <td>{record['ffc_no'] or 'N/A'}</td>
             <td><span class="{status_class}">{status_icon} {record['submit_status_str'] or '未知'}</span></td>
             <td>{record['create_date'].strftime('%Y-%m-%d %H:%M:%S') if record['create_date'] else 'N/A'}</td>
+            <td>{record['subject'] or 'N/A'}</td>
         </tr>
         '''
 
@@ -819,7 +819,7 @@ tr:hover {{
     <table id="report-table">
       <thead>
         <tr>
-          <th>ID</th><th>Booking Key</th><th>CDS No</th><th>FFC No</th><th>状态</th><th>创建日期</th>
+          <th>ID</th><th>Booking Key</th><th>CDS No</th><th>FFC No</th><th>状态</th><th>创建日期</th><th>主题</th>
         </tr>
       </thead>
       <tbody>
@@ -852,6 +852,19 @@ document.getElementById("search").addEventListener("keyup",function(){{
   }});
 }});
 
+function showDetails(id, bookingKey, cdsNo, ffcNo, status, createDate, subject) {{
+  const detailBody = document.getElementById('detailBody');
+  detailBody.innerHTML = `
+    <strong>ID:</strong> ${{id}}<br>
+    <strong>Booking Key:</strong> ${{bookingKey}}<br>
+    <strong>CDS No:</strong> ${{cdsNo}}<br>
+    <strong>FFC No:</strong> ${{ffcNo}}<br>
+    <strong>状态:</strong> ${{status}}<br>
+    <strong>创建日期:</strong> ${{createDate}}<br>
+    <strong>主题:</strong> ${{subject}}<br>
+  `;
+  document.getElementById("detailModal").style.display="flex";
+}}
 
 function closeModal(){{
   document.getElementById("detailModal").style.display="none";
@@ -861,6 +874,192 @@ function closeModal(){{
 </html>
 """
     return html_content
+
+
+# def generate_html_report2(data):
+#     # # 确保以下变量都已正确定义
+#     # id = data.get('id', '')
+#     # key = data.get('key', '')  # 添加这行或确保key变量已定义
+#     # cds = data.get('cds', '')
+#     # ffc = data.get('ffc', '')
+#     # status = data.get('status', '')
+#     # date = data.get('date', '')
+#     from datetime import datetime, date
+#     """
+#     生成现代化 HTML 报表（带搜索、主题切换、详情弹窗）
+#     """
+#     # 获取当前时间
+#     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+#
+#     # 生成表格行
+#     table_rows = ""
+#     for record in data:
+#         status_class = "status-other"
+#         status_icon = "🔹"
+#         if record['submit_status_str'] and '完成' in record['submit_status_str']:
+#             status_class = "status-active"
+#             status_icon = "✅"
+#         elif record['submit_status_str'] and (
+#                 '处理' in record['submit_status_str'] or '进行' in record['submit_status_str']):
+#             status_class = "status-pending"
+#             status_icon = "⏳"
+#
+#         table_rows += f'''
+#         <tr onclick="showDetails('{record['id']}','{record['booking_key']}','{record['cds_booking_no'] or 'N/A'}','{record['ffc_no'] or 'N/A'}','{record['submit_status_str'] or '未知'}','{record['create_date'].strftime('%Y-%m-%d %H:%M:%S') if record['create_date'] else 'N/A'}')">
+#             <td>{record['id']}</td>
+#             <td>{record['booking_key']}</td>
+#             <td>{record['cds_booking_no'] or 'N/A'}</td>
+#             <td>{record['ffc_no'] or 'N/A'}</td>
+#             <td><span class="{status_class}">{status_icon} {record['submit_status_str'] or '未知'}</span></td>
+#             <td>{record['create_date'].strftime('%Y-%m-%d %H:%M:%S') if record['create_date'] else 'N/A'}</td>
+#         </tr>
+#         '''
+#
+#     html_content = f"""<!DOCTYPE html>
+# <html lang="zh-CN" data-theme="light">
+# <head>
+# <meta charset="UTF-8">
+# <meta name="viewport" content="width=device-width, initial-scale=1.0">
+# <title>亚集即时未处理邮件统计</title>
+# <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+#
+# <style>
+# :root {{
+#   --bg-light: #f6f8fb;
+#   --bg-dark: #121826;
+#   --card-light: rgba(255,255,255,0.92);
+#   --card-dark: rgba(24,28,36,0.92);
+#   --text-light: #222;
+#   --text-dark: #eee;
+# }}
+# body {{
+#   margin:0; font-family:"Segoe UI",sans-serif;
+#   background: var(--bg-light);
+#   color: var(--text-light);
+#   transition: background .3s,color .3s;
+# }}
+# [data-theme="dark"] body {{
+#   background: var(--bg-dark);
+#   color: var(--text-dark);
+# }}
+# .container {{
+#   max-width:1200px; margin:20px auto;
+#   background: var(--card-light);
+#   border-radius:12px; padding:20px;
+#   box-shadow:0 8px 20px rgba(0,0,0,0.1);
+#   transition: background .3s;
+# }}
+# [data-theme="dark"] .container {{
+#   background: var(--card-dark);
+# }}
+# .header {{
+#   display:flex;justify-content:space-between;align-items:center;
+# }}
+# .theme-toggle {{
+#   cursor:pointer; border:none; background:#667eea;color:white;
+#   padding:8px 14px;border-radius:8px;font-size:14px;
+# }}
+# .stats {{
+#   display:flex;justify-content:space-around;flex-wrap:wrap;margin:20px 0;
+# }}
+# .stat-item {{
+#   padding:10px;text-align:center;min-width:160px;
+# }}
+# .stat-number {{font-size:1.8em;font-weight:700;color:#667eea;}}
+# table {{
+#   width:100%;border-collapse:collapse;margin-top:15px;
+# }}
+# th,td {{
+#   padding:12px;text-align:left;border-bottom:1px solid #ddd;
+# }}
+# tr:hover {{
+#   background:#f1f5ff;cursor:pointer;
+# }}
+# .status-active {{color:#155724;background:#d4edda;padding:4px 10px;border-radius:12px;}}
+# .status-pending {{color:#856404;background:#fff3cd;padding:4px 10px;border-radius:12px;}}
+# .status-other {{color:#0c5460;background:#d1ecf1;padding:4px 10px;border-radius:12px;}}
+# /* 弹窗 */
+# .modal {{
+#   display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+#   background:rgba(0,0,0,0.6);align-items:center;justify-content:center;
+# }}
+# .modal-content {{
+#   background:white;padding:20px;border-radius:10px;max-width:500px;width:90%;
+# }}
+# [data-theme="dark"] .modal-content {{
+#   background:#1f2533;color:#fff;
+# }}
+# </style>
+# </head>
+# <body>
+#   <div class="container">
+#     <div class="header">
+#       <h2><i class="fas fa-chart-line"></i> 亚集统计报表</h2>
+#       <button class="theme-toggle" onclick="toggleTheme()">切换主题</button>
+#     </div>
+#
+#     <div class="stats">
+#       <div class="stat-item">
+#         <div class="stat-number">{len(data)}</div>
+#         <div>匹配记录数</div>
+#       </div>
+#       <div class="stat-item">
+#         <div class="stat-number">{current_time}</div>
+#         <div>生成时间</div>
+#       </div>
+#       <div class="stat-item">
+#         <div class="stat-number">{date.today().strftime("%Y-%m-%d")}</div>
+#         <div>报告日期</div>
+#       </div>
+#     </div>
+#
+#     <input type="text" id="search" placeholder="🔍 搜索 Booking Key..." style="width:100%;padding:10px;margin:10px 0;border-radius:8px;border:1px solid #ccc;">
+#
+#     <table id="report-table">
+#       <thead>
+#         <tr>
+#           <th>ID</th><th>Booking Key</th><th>CDS No</th><th>FFC No</th><th>状态</th><th>创建日期</th>
+#         </tr>
+#       </thead>
+#       <tbody>
+#         {table_rows}
+#       </tbody>
+#     </table>
+#   </div>
+#
+#   <!-- 详情弹窗 -->
+#   <div class="modal" id="detailModal">
+#     <div class="modal-content">
+#       <h3>记录详情</h3>
+#       <p id="detailBody"></p>
+#       <button onclick="closeModal()">关闭</button>
+#     </div>
+#   </div>
+#
+# <script>
+# function toggleTheme(){{
+#   const html=document.documentElement;
+#   const theme=html.getAttribute("data-theme")==="dark"?"light":"dark";
+#   html.setAttribute("data-theme",theme);
+# }}
+#
+# document.getElementById("search").addEventListener("keyup",function(){{
+#   let filter=this.value.toLowerCase();
+#   let rows=document.querySelectorAll("#report-table tbody tr");
+#   rows.forEach(r=>{{
+#     r.style.display=r.innerText.toLowerCase().includes(filter)?"":"none";
+#   }});
+# }});
+#
+#
+# function closeModal(){{
+#   document.getElementById("detailModal").style.display="none";
+# }}
+# </script>
+# </body>
+# </html>
+# """
+#     return html_content
 
 
 # 在文件末尾添加以下函数
@@ -3202,11 +3401,11 @@ def query_alo_without_fbe_records():
                 m.submit_status_str,
                 m.create_date
             FROM yaji_email_records er
-            INNER JOIN yaji_main m ON er.alo = m.booking_key
+            INNER JOIN yaji_main_fba m ON er.alo = m.booking_key
             WHERE DATE(er.received_time) = %s
             AND er.alo IS NOT NULL
             AND er.alo != '无al0信息'
-            AND (m.cds_booking_no IS NULL OR m.cds_booking_no = '')
+            
             ORDER BY er.received_time DESC
             '''
 
@@ -3597,21 +3796,11 @@ def send_alo_without_fbe_report_via_email(recipients, data):
 
 
 
-
-
-
-
-
-
-
-
-
-
 # 修改主程序部分
 def main():
-    saika()
-    saika_fba()
-    eternal()
+    # saika()
+    # saika_fba()
+    # eternal()
 
     # 查询数据
     data = query_alo_and_booking_mapping()
