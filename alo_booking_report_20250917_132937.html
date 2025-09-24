@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>亚集即时未处理邮件统计</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+:root {
+  --bg-light: #f6f8fb;
+  --bg-dark: #121826;
+  --card-light: rgba(255,255,255,0.92);
+  --card-dark: rgba(24,28,36,0.92);
+  --text-light: #222;
+  --text-dark: #eee;
+}
+body {
+  margin:0; font-family:"Segoe UI",sans-serif;
+  background: var(--bg-light);
+  color: var(--text-light);
+  transition: background .3s,color .3s;
+}
+[data-theme="dark"] body {
+  background: var(--bg-dark);
+  color: var(--text-dark);
+}
+.container {
+  max-width:1200px; margin:20px auto;
+  background: var(--card-light);
+  border-radius:12px; padding:20px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.1);
+  transition: background .3s;
+}
+[data-theme="dark"] .container {
+  background: var(--card-dark);
+}
+.header {
+  display:flex;justify-content:space-between;align-items:center;
+}
+.theme-toggle {
+  cursor:pointer; border:none; background:#667eea;color:white;
+  padding:8px 14px;border-radius:8px;font-size:14px;
+}
+.stats {
+  display:flex;justify-content:space-around;flex-wrap:wrap;margin:20px 0;
+}
+.stat-item {
+  padding:10px;text-align:center;min-width:160px;
+}
+.stat-number {font-size:1.8em;font-weight:700;color:#667eea;}
+table {
+  width:100%;border-collapse:collapse;margin-top:15px;
+}
+th,td {
+  padding:12px;text-align:left;border-bottom:1px solid #ddd;
+}
+tr:hover {
+  background:#f1f5ff;cursor:pointer;
+}
+.status-active {color:#155724;background:#d4edda;padding:4px 10px;border-radius:12px;}
+.status-pending {color:#856404;background:#fff3cd;padding:4px 10px;border-radius:12px;}
+.status-other {color:#0c5460;background:#d1ecf1;padding:4px 10px;border-radius:12px;}
+/* 弹窗 */
+.modal {
+  display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.6);align-items:center;justify-content:center;
+}
+.modal-content {
+  background:white;padding:20px;border-radius:10px;max-width:500px;width:90%;
+}
+[data-theme="dark"] .modal-content {
+  background:#1f2533;color:#fff;
+}
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2><i class="fas fa-chart-line"></i> 亚集统计报表</h2>
+      <button class="theme-toggle" onclick="toggleTheme()">切换主题</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat-item">
+        <div class="stat-number">41</div>
+        <div>匹配记录数</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">2025-09-17 13:29:37</div>
+        <div>生成时间</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">2025-09-17</div>
+        <div>报告日期</div>
+      </div>
+    </div>
+
+    <input type="text" id="search" placeholder="🔍 搜索 Booking Key..." style="width:100%;padding:10px;margin:10px 0;border-radius:8px;border:1px solid #ccc;">
+
+    <table id="report-table">
+      <thead>
+        <tr>
+          <th>ID</th><th>Booking Key</th><th>CDS No</th><th>FFC No</th><th>状态</th><th>创建日期</th><th>主题</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr onclick="showDetails('28413','AL0-XW2X2ZS6BUQWG','FBEFELN15947NB0','BHX7','审核成功','2025-09-12 15:32:49','【SX报关资料】FW: Fw:  [SX][TR] [OVERSEA]  LCL Seller Central AL0-XW2X2ZS6BUQWG Clark Widdowson Enterprises Ltd CNNGB BHX7 DDP AMZDCN25TZMI2P5H   FBA15KT7KPTS 25JL-343')">
+            <td>28413</td>
+            <td>AL0-XW2X2ZS6BUQWG</td>
+            <td>FBEFELN15947NB0</td>
+            <td>BHX7</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-12 15:32:49</td>
+            <td>【SX报关资料】FW: Fw:  [SX][TR] [OVERSEA]  LCL Seller Central AL0-XW2X2ZS6BUQWG Clark Widdowson Enterprises Ltd CNNGB BHX7 DDP AMZDCN25TZMI2P5H   FBA15KT7KPTS 25JL-343</td>
+        </tr>
+        
+        <tr onclick="showDetails('28413','AL0-XW2X2ZS6BUQWG','FBEFELN15947NB0','BHX7','审核成功','2025-09-12 15:32:49','RE: 【SX报关资料】FW: Fw:  [SX][TR] [OVERSEA]  LCL Seller Central AL0-XW2X2ZS6BUQWG Clark Widdowson Enterprises Ltd CNNGB BHX7 DDP AMZDCN25TZMI2P5H   FBA15KT7KPTS 25JL-343')">
+            <td>28413</td>
+            <td>AL0-XW2X2ZS6BUQWG</td>
+            <td>FBEFELN15947NB0</td>
+            <td>BHX7</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-12 15:32:49</td>
+            <td>RE: 【SX报关资料】FW: Fw:  [SX][TR] [OVERSEA]  LCL Seller Central AL0-XW2X2ZS6BUQWG Clark Widdowson Enterprises Ltd CNNGB BHX7 DDP AMZDCN25TZMI2P5H   FBA15KT7KPTS 25JL-343</td>
+        </tr>
+        
+        <tr onclick="showDetails('28413','AL0-XW2X2ZS6BUQWG','FBEFELN15947NB0','BHX7','审核成功','2025-09-12 15:32:49','Fw: RE: 【SX报关资料】FW: Fw:  [SX][TR] [OVERSEA]  LCL Seller Central AL0-XW2X2ZS6BUQWG Clark Widdowson Enterprises Ltd CNNGB BHX7 DDP AMZDCN25TZMI2P5H   FBA15KT7KPTS 25JL-343')">
+            <td>28413</td>
+            <td>AL0-XW2X2ZS6BUQWG</td>
+            <td>FBEFELN15947NB0</td>
+            <td>BHX7</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-12 15:32:49</td>
+            <td>Fw: RE: 【SX报关资料】FW: Fw:  [SX][TR] [OVERSEA]  LCL Seller Central AL0-XW2X2ZS6BUQWG Clark Widdowson Enterprises Ltd CNNGB BHX7 DDP AMZDCN25TZMI2P5H   FBA15KT7KPTS 25JL-343</td>
+        </tr>
+        
+        <tr onclick="showDetails('28601','AL0-SGPAWBGTGTG7Q','FBERTMN15895NB0','XDU5','审核成功','2025-09-15 12:01:30','【SX报关资料】FW: [EU] AL0-SGPAWBGTGTG7Q CNNGB AMZDCN256YJEO76T FBA15KT0VW7S NL')">
+            <td>28601</td>
+            <td>AL0-SGPAWBGTGTG7Q</td>
+            <td>FBERTMN15895NB0</td>
+            <td>XDU5</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-15 12:01:30</td>
+            <td>【SX报关资料】FW: [EU] AL0-SGPAWBGTGTG7Q CNNGB AMZDCN256YJEO76T FBA15KT0VW7S NL</td>
+        </tr>
+        
+        <tr onclick="showDetails('28601','AL0-SGPAWBGTGTG7Q','FBERTMN15895NB0','XDU5','审核成功','2025-09-15 12:01:30','【SX报关资料】FW: 回复: [SX][进仓通知] 回复: [SX] [1ST]  LCL Seller Central AL0-SGPAWBGTGTG7Q DILUMEN  ELECTRONICS LIMITED CNNGB XDU5 FOB AMZDCN256YJEO76T   FBA15KT0VW7S')">
+            <td>28601</td>
+            <td>AL0-SGPAWBGTGTG7Q</td>
+            <td>FBERTMN15895NB0</td>
+            <td>XDU5</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-15 12:01:30</td>
+            <td>【SX报关资料】FW: 回复: [SX][进仓通知] 回复: [SX] [1ST]  LCL Seller Central AL0-SGPAWBGTGTG7Q DILUMEN  ELECTRONICS LIMITED CNNGB XDU5 FOB AMZDCN256YJEO76T   FBA15KT0VW7S</td>
+        </tr>
+        
+        <tr onclick="showDetails('28601','AL0-SGPAWBGTGTG7Q','FBERTMN15895NB0','XDU5','审核成功','2025-09-15 12:01:30','Fw: 【SX报关资料】FW: 回复: [SX][进仓通知] 回复: [SX] [1ST]  LCL Seller Central AL0-SGPAWBGTGTG7Q DILUMEN  ELECTRONICS LIMITED CNNGB XDU5 FOB AMZDCN256YJEO76T   FBA15KT0VW7S')">
+            <td>28601</td>
+            <td>AL0-SGPAWBGTGTG7Q</td>
+            <td>FBERTMN15895NB0</td>
+            <td>XDU5</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-15 12:01:30</td>
+            <td>Fw: 【SX报关资料】FW: 回复: [SX][进仓通知] 回复: [SX] [1ST]  LCL Seller Central AL0-SGPAWBGTGTG7Q DILUMEN  ELECTRONICS LIMITED CNNGB XDU5 FOB AMZDCN256YJEO76T   FBA15KT0VW7S</td>
+        </tr>
+        
+        <tr onclick="showDetails('28601','AL0-SGPAWBGTGTG7Q','FBERTMN15895NB0','XDU5','审核成功','2025-09-15 12:01:30','回复: 【SX报关资料】FW: 回复: [SX][进仓通知] 回复: [SX] [1ST]  LCL Seller Central AL0-SGPAWBGTGTG7Q DILUMEN  ELECTRONICS LIMITED CNNGB XDU5 FOB AMZDCN256YJEO76T   FBA15KT0VW7S')">
+            <td>28601</td>
+            <td>AL0-SGPAWBGTGTG7Q</td>
+            <td>FBERTMN15895NB0</td>
+            <td>XDU5</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-15 12:01:30</td>
+            <td>回复: 【SX报关资料】FW: 回复: [SX][进仓通知] 回复: [SX] [1ST]  LCL Seller Central AL0-SGPAWBGTGTG7Q DILUMEN  ELECTRONICS LIMITED CNNGB XDU5 FOB AMZDCN256YJEO76T   FBA15KT0VW7S</td>
+        </tr>
+        
+        <tr onclick="showDetails('28824','AL0-QUXK4FKUP5JZ2','FBERTMN16062NB0','DUS2','审核成功','2025-09-16 11:16:45','AL0-QUXK4FKUP5JZ2+报关资料')">
+            <td>28824</td>
+            <td>AL0-QUXK4FKUP5JZ2</td>
+            <td>FBERTMN16062NB0</td>
+            <td>DUS2</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-16 11:16:45</td>
+            <td>AL0-QUXK4FKUP5JZ2+报关资料</td>
+        </tr>
+        
+        <tr onclick="showDetails('28827','AL0-TUQW3KUYRWWEY','FBEFELN16060NB0','LBA2','审核成功','2025-09-16 11:16:46','AL0-TUQW3KUYRWWEY+报关资料')">
+            <td>28827</td>
+            <td>AL0-TUQW3KUYRWWEY</td>
+            <td>FBEFELN16060NB0</td>
+            <td>LBA2</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-16 11:16:46</td>
+            <td>AL0-TUQW3KUYRWWEY+报关资料</td>
+        </tr>
+        
+        <tr onclick="showDetails('28824','AL0-QUXK4FKUP5JZ2','FBERTMN16062NB0','DUS2','审核成功','2025-09-16 11:16:45','【报关资料】[ALL-IN][进仓数据确认与截单资料收集][NL] AL0-QUXK4FKUP5JZ2 CNNGB AMZDCN25FDEMSEF2 FBA15KTP8NWX')">
+            <td>28824</td>
+            <td>AL0-QUXK4FKUP5JZ2</td>
+            <td>FBERTMN16062NB0</td>
+            <td>DUS2</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-16 11:16:45</td>
+            <td>【报关资料】[ALL-IN][进仓数据确认与截单资料收集][NL] AL0-QUXK4FKUP5JZ2 CNNGB AMZDCN25FDEMSEF2 FBA15KTP8NWX</td>
+        </tr>
+        
+        <tr onclick="showDetails('28824','AL0-QUXK4FKUP5JZ2','FBERTMN16062NB0','DUS2','审核成功','2025-09-16 11:16:45','Fw: 【报关资料】[ALL-IN][进仓数据确认与截单资料收集][NL] AL0-QUXK4FKUP5JZ2 CNNGB AMZDCN25FDEMSEF2 FBA15KTP8NWX')">
+            <td>28824</td>
+            <td>AL0-QUXK4FKUP5JZ2</td>
+            <td>FBERTMN16062NB0</td>
+            <td>DUS2</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-16 11:16:45</td>
+            <td>Fw: 【报关资料】[ALL-IN][进仓数据确认与截单资料收集][NL] AL0-QUXK4FKUP5JZ2 CNNGB AMZDCN25FDEMSEF2 FBA15KTP8NWX</td>
+        </tr>
+        
+        <tr onclick="showDetails('28413','AL0-XW2X2ZS6BUQWG','FBEFELN15947NB0','BHX7','审核成功','2025-09-12 15:32:49','RE: 【SX报关资料】FW: Fw:  [SX][TR] [OVERSEA]  LCL Seller Central AL0-XW2X2ZS6BUQWG Clark Widdowson Enterprises Ltd CNNGB BHX7 DDP AMZDCN25TZMI2P5H   FBA15KT7KPTS 25JL-343')">
+            <td>28413</td>
+            <td>AL0-XW2X2ZS6BUQWG</td>
+            <td>FBEFELN15947NB0</td>
+            <td>BHX7</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-12 15:32:49</td>
+            <td>RE: 【SX报关资料】FW: Fw:  [SX][TR] [OVERSEA]  LCL Seller Central AL0-XW2X2ZS6BUQWG Clark Widdowson Enterprises Ltd CNNGB BHX7 DDP AMZDCN25TZMI2P5H   FBA15KT7KPTS 25JL-343</td>
+        </tr>
+        
+        <tr onclick="showDetails('28413','AL0-XW2X2ZS6BUQWG','FBEFELN15947NB0','BHX7','审核成功','2025-09-12 15:32:49','RE: 【SX报关资料】FW: Fw:  [SX][TR] [OVERSEA]  LCL Seller Central AL0-XW2X2ZS6BUQWG Clark Widdowson Enterprises Ltd CNNGB BHX7 DDP AMZDCN25TZMI2P5H   FBA15KT7KPTS 25JL-343')">
+            <td>28413</td>
+            <td>AL0-XW2X2ZS6BUQWG</td>
+            <td>FBEFELN15947NB0</td>
+            <td>BHX7</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-12 15:32:49</td>
+            <td>RE: 【SX报关资料】FW: Fw:  [SX][TR] [OVERSEA]  LCL Seller Central AL0-XW2X2ZS6BUQWG Clark Widdowson Enterprises Ltd CNNGB BHX7 DDP AMZDCN25TZMI2P5H   FBA15KT7KPTS 25JL-343</td>
+        </tr>
+        
+        <tr onclick="showDetails('28413','AL0-XW2X2ZS6BUQWG','FBEFELN15947NB0','BHX7','审核成功','2025-09-12 15:32:49','RE: RE: 【SX报关资料】FW: Fw:  [SX][TR] [OVERSEA]  LCL Seller Central AL0-XW2X2ZS6BUQWG Clark Widdowson Enterprises Ltd CNNGB BHX7 DDP AMZDCN25TZMI2P5H   FBA15KT7KPTS 25JL-343')">
+            <td>28413</td>
+            <td>AL0-XW2X2ZS6BUQWG</td>
+            <td>FBEFELN15947NB0</td>
+            <td>BHX7</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-12 15:32:49</td>
+            <td>RE: RE: 【SX报关资料】FW: Fw:  [SX][TR] [OVERSEA]  LCL Seller Central AL0-XW2X2ZS6BUQWG Clark Widdowson Enterprises Ltd CNNGB BHX7 DDP AMZDCN25TZMI2P5H   FBA15KT7KPTS 25JL-343</td>
+        </tr>
+        
+        <tr onclick="showDetails('28601','AL0-SGPAWBGTGTG7Q','FBERTMN15895NB0','XDU5','审核成功','2025-09-15 12:01:30','回复: 【SX报关资料】FW: [EU] AL0-SGPAWBGTGTG7Q CNNGB AMZDCN256YJEO76T FBA15KT0VW7S NL')">
+            <td>28601</td>
+            <td>AL0-SGPAWBGTGTG7Q</td>
+            <td>FBERTMN15895NB0</td>
+            <td>XDU5</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-15 12:01:30</td>
+            <td>回复: 【SX报关资料】FW: [EU] AL0-SGPAWBGTGTG7Q CNNGB AMZDCN256YJEO76T FBA15KT0VW7S NL</td>
+        </tr>
+        
+        <tr onclick="showDetails('29030','AL0-QJZNXG3HWZDFC','FBERTMN16039NB0','DTM2','已受理','2025-09-17 09:46:02','【报关资料】【进仓通知】 [1ST] [OVERSEA] LCL Seller Central AL0-QJZNXG3HWZDFC SMOWOTION SLU CNNGB DTM2 FOB AMZDCN257XID6KUS FBA15KTKVVVM')">
+            <td>29030</td>
+            <td>AL0-QJZNXG3HWZDFC</td>
+            <td>FBERTMN16039NB0</td>
+            <td>DTM2</td>
+            <td><span class="status-other">🔹 已受理</span></td>
+            <td>2025-09-17 09:46:02</td>
+            <td>【报关资料】【进仓通知】 [1ST] [OVERSEA] LCL Seller Central AL0-QJZNXG3HWZDFC SMOWOTION SLU CNNGB DTM2 FOB AMZDCN257XID6KUS FBA15KTKVVVM</td>
+        </tr>
+        
+        <tr onclick="showDetails('28601','AL0-SGPAWBGTGTG7Q','FBERTMN15895NB0','XDU5','审核成功','2025-09-15 12:01:30','回复: 回复: 【SX报关资料】FW: [EU] AL0-SGPAWBGTGTG7Q CNNGB AMZDCN256YJEO76T FBA15KT0VW7S NL')">
+            <td>28601</td>
+            <td>AL0-SGPAWBGTGTG7Q</td>
+            <td>FBERTMN15895NB0</td>
+            <td>XDU5</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-15 12:01:30</td>
+            <td>回复: 回复: 【SX报关资料】FW: [EU] AL0-SGPAWBGTGTG7Q CNNGB AMZDCN256YJEO76T FBA15KT0VW7S NL</td>
+        </tr>
+        
+        <tr onclick="showDetails('28601','AL0-SGPAWBGTGTG7Q','FBERTMN15895NB0','XDU5','审核成功','2025-09-15 12:01:30','Fw: 回复: 【SX报关资料】FW: [EU] AL0-SGPAWBGTGTG7Q CNNGB AMZDCN256YJEO76T FBA15KT0VW7S NL')">
+            <td>28601</td>
+            <td>AL0-SGPAWBGTGTG7Q</td>
+            <td>FBERTMN15895NB0</td>
+            <td>XDU5</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-15 12:01:30</td>
+            <td>Fw: 回复: 【SX报关资料】FW: [EU] AL0-SGPAWBGTGTG7Q CNNGB AMZDCN256YJEO76T FBA15KT0VW7S NL</td>
+        </tr>
+        
+        <tr onclick="showDetails('29033','AL0-XY766J6WC3SXX','FBEFELN15873NB0','LBA4','已受理','2025-09-17 09:46:02','回复:   [GB] [进仓数据确认] AL0-XY766J6WC3SXX SG44VWSYX5XW4 CNNGB AMZDCN25KLY6TXVA FBA15KSYKJYG')">
+            <td>29033</td>
+            <td>AL0-XY766J6WC3SXX</td>
+            <td>FBEFELN15873NB0</td>
+            <td>LBA4</td>
+            <td><span class="status-other">🔹 已受理</span></td>
+            <td>2025-09-17 09:46:02</td>
+            <td>回复:   [GB] [进仓数据确认] AL0-XY766J6WC3SXX SG44VWSYX5XW4 CNNGB AMZDCN25KLY6TXVA FBA15KSYKJYG</td>
+        </tr>
+        
+        <tr onclick="showDetails('28413','AL0-XW2X2ZS6BUQWG','FBEFELN15947NB0','BHX7','审核成功','2025-09-12 15:32:49','RE: RE: 【SX报关资料】FW: Fw:  [SX][TR] [OVERSEA]  LCL Seller Central AL0-XW2X2ZS6BUQWG Clark Widdowson Enterprises Ltd CNNGB BHX7 DDP AMZDCN25TZMI2P5H   FBA15KT7KPTS 25JL-343')">
+            <td>28413</td>
+            <td>AL0-XW2X2ZS6BUQWG</td>
+            <td>FBEFELN15947NB0</td>
+            <td>BHX7</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-12 15:32:49</td>
+            <td>RE: RE: 【SX报关资料】FW: Fw:  [SX][TR] [OVERSEA]  LCL Seller Central AL0-XW2X2ZS6BUQWG Clark Widdowson Enterprises Ltd CNNGB BHX7 DDP AMZDCN25TZMI2P5H   FBA15KT7KPTS 25JL-343</td>
+        </tr>
+        
+        <tr onclick="showDetails('29033','AL0-XY766J6WC3SXX','FBEFELN15873NB0','LBA4','已受理','2025-09-17 09:46:02','回复： 回复:   [GB] [进仓数据确认] AL0-XY766J6WC3SXX SG44VWSYX5XW4 CNNGB AMZDCN25KLY6TXVA FBA15KSYKJYG')">
+            <td>29033</td>
+            <td>AL0-XY766J6WC3SXX</td>
+            <td>FBEFELN15873NB0</td>
+            <td>LBA4</td>
+            <td><span class="status-other">🔹 已受理</span></td>
+            <td>2025-09-17 09:46:02</td>
+            <td>回复： 回复:   [GB] [进仓数据确认] AL0-XY766J6WC3SXX SG44VWSYX5XW4 CNNGB AMZDCN25KLY6TXVA FBA15KSYKJYG</td>
+        </tr>
+        
+        <tr onclick="showDetails('28601','AL0-SGPAWBGTGTG7Q','FBERTMN15895NB0','XDU5','审核成功','2025-09-15 12:01:30','回复: 回复: 【SX报关资料】FW: [EU] AL0-SGPAWBGTGTG7Q CNNGB AMZDCN256YJEO76T FBA15KT0VW7S NL')">
+            <td>28601</td>
+            <td>AL0-SGPAWBGTGTG7Q</td>
+            <td>FBERTMN15895NB0</td>
+            <td>XDU5</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-15 12:01:30</td>
+            <td>回复: 回复: 【SX报关资料】FW: [EU] AL0-SGPAWBGTGTG7Q CNNGB AMZDCN256YJEO76T FBA15KT0VW7S NL</td>
+        </tr>
+        
+        <tr onclick="showDetails('28601','AL0-SGPAWBGTGTG7Q','FBERTMN15895NB0','XDU5','审核成功','2025-09-15 12:01:30','Fw: 回复: 【SX报关资料】FW: [EU] AL0-SGPAWBGTGTG7Q CNNGB AMZDCN256YJEO76T FBA15KT0VW7S NL')">
+            <td>28601</td>
+            <td>AL0-SGPAWBGTGTG7Q</td>
+            <td>FBERTMN15895NB0</td>
+            <td>XDU5</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-15 12:01:30</td>
+            <td>Fw: 回复: 【SX报关资料】FW: [EU] AL0-SGPAWBGTGTG7Q CNNGB AMZDCN256YJEO76T FBA15KT0VW7S NL</td>
+        </tr>
+        
+        <tr onclick="showDetails('28824','AL0-QUXK4FKUP5JZ2','FBERTMN16062NB0','DUS2','审核成功','2025-09-16 11:16:45','Re: Re: AL0-QUXK4FKUP5JZ2+报关资料')">
+            <td>28824</td>
+            <td>AL0-QUXK4FKUP5JZ2</td>
+            <td>FBERTMN16062NB0</td>
+            <td>DUS2</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-16 11:16:45</td>
+            <td>Re: Re: AL0-QUXK4FKUP5JZ2+报关资料</td>
+        </tr>
+        
+        <tr onclick="showDetails('29106','AL0-VB4AQJXWY5AK2','FBERTMN16032NB0','XSC1','已受理','2025-09-17 11:31:33','RE: AL0-VB4AQJXWY5AK2+报关资料')">
+            <td>29106</td>
+            <td>AL0-VB4AQJXWY5AK2</td>
+            <td>FBERTMN16032NB0</td>
+            <td>XSC1</td>
+            <td><span class="status-other">🔹 已受理</span></td>
+            <td>2025-09-17 11:31:33</td>
+            <td>RE: AL0-VB4AQJXWY5AK2+报关资料</td>
+        </tr>
+        
+        <tr onclick="showDetails('28827','AL0-TUQW3KUYRWWEY','FBEFELN16060NB0','LBA2','审核成功','2025-09-16 11:16:46','Re: Re: AL0-TUQW3KUYRWWEY+报关资料')">
+            <td>28827</td>
+            <td>AL0-TUQW3KUYRWWEY</td>
+            <td>FBEFELN16060NB0</td>
+            <td>LBA2</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-16 11:16:46</td>
+            <td>Re: Re: AL0-TUQW3KUYRWWEY+报关资料</td>
+        </tr>
+        
+        <tr onclick="showDetails('29106','AL0-VB4AQJXWY5AK2','FBERTMN16032NB0','XSC1','已受理','2025-09-17 11:31:33','RE: 自动回复:RE: AL0-VB4AQJXWY5AK2+报关资料')">
+            <td>29106</td>
+            <td>AL0-VB4AQJXWY5AK2</td>
+            <td>FBERTMN16032NB0</td>
+            <td>XSC1</td>
+            <td><span class="status-other">🔹 已受理</span></td>
+            <td>2025-09-17 11:31:33</td>
+            <td>RE: 自动回复:RE: AL0-VB4AQJXWY5AK2+报关资料</td>
+        </tr>
+        
+        <tr onclick="showDetails('28824','AL0-QUXK4FKUP5JZ2','FBERTMN16062NB0','DUS2','审核成功','2025-09-16 11:16:45','Fw: Re: AL0-QUXK4FKUP5JZ2+报关资料')">
+            <td>28824</td>
+            <td>AL0-QUXK4FKUP5JZ2</td>
+            <td>FBERTMN16062NB0</td>
+            <td>DUS2</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-16 11:16:45</td>
+            <td>Fw: Re: AL0-QUXK4FKUP5JZ2+报关资料</td>
+        </tr>
+        
+        <tr onclick="showDetails('28827','AL0-TUQW3KUYRWWEY','FBEFELN16060NB0','LBA2','审核成功','2025-09-16 11:16:46','Fw: Re: AL0-TUQW3KUYRWWEY+报关资料')">
+            <td>28827</td>
+            <td>AL0-TUQW3KUYRWWEY</td>
+            <td>FBEFELN16060NB0</td>
+            <td>LBA2</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-16 11:16:46</td>
+            <td>Fw: Re: AL0-TUQW3KUYRWWEY+报关资料</td>
+        </tr>
+        
+        <tr onclick="showDetails('29033','AL0-XY766J6WC3SXX','FBEFELN15873NB0','LBA4','已受理','2025-09-17 09:46:02','Re:  回复:   [GB] [进仓数据确认] AL0-XY766J6WC3SXX SG44VWSYX5XW4 CNNGB AMZDCN25KLY6TXVA FBA15KSYKJYG')">
+            <td>29033</td>
+            <td>AL0-XY766J6WC3SXX</td>
+            <td>FBEFELN15873NB0</td>
+            <td>LBA4</td>
+            <td><span class="status-other">🔹 已受理</span></td>
+            <td>2025-09-17 09:46:02</td>
+            <td>Re:  回复:   [GB] [进仓数据确认] AL0-XY766J6WC3SXX SG44VWSYX5XW4 CNNGB AMZDCN25KLY6TXVA FBA15KSYKJYG</td>
+        </tr>
+        
+        <tr onclick="showDetails('29033','AL0-XY766J6WC3SXX','FBEFELN15873NB0','LBA4','已受理','2025-09-17 09:46:02','Fw: Re:   [GB] [进仓数据确认] AL0-XY766J6WC3SXX SG44VWSYX5XW4 CNNGB AMZDCN25KLY6TXVA FBA15KSYKJYG')">
+            <td>29033</td>
+            <td>AL0-XY766J6WC3SXX</td>
+            <td>FBEFELN15873NB0</td>
+            <td>LBA4</td>
+            <td><span class="status-other">🔹 已受理</span></td>
+            <td>2025-09-17 09:46:02</td>
+            <td>Fw: Re:   [GB] [进仓数据确认] AL0-XY766J6WC3SXX SG44VWSYX5XW4 CNNGB AMZDCN25KLY6TXVA FBA15KSYKJYG</td>
+        </tr>
+        
+        <tr onclick="showDetails('29033','AL0-XY766J6WC3SXX','FBEFELN15873NB0','LBA4','已受理','2025-09-17 09:46:02','Re: 自动回复:Re:  回复:   [GB] [进仓数据确认] AL0-XY766J6WC3SXX SG44VWSYX5XW4 CNNGB AMZDCN25KLY6TXVA FBA15KSYKJYG')">
+            <td>29033</td>
+            <td>AL0-XY766J6WC3SXX</td>
+            <td>FBEFELN15873NB0</td>
+            <td>LBA4</td>
+            <td><span class="status-other">🔹 已受理</span></td>
+            <td>2025-09-17 09:46:02</td>
+            <td>Re: 自动回复:Re:  回复:   [GB] [进仓数据确认] AL0-XY766J6WC3SXX SG44VWSYX5XW4 CNNGB AMZDCN25KLY6TXVA FBA15KSYKJYG</td>
+        </tr>
+        
+        <tr onclick="showDetails('29033','AL0-XY766J6WC3SXX','FBEFELN15873NB0','LBA4','已受理','2025-09-17 09:46:02','Fw: Re: 自动回复:Re:  回复:   [GB] [进仓数据确认] AL0-XY766J6WC3SXX SG44VWSYX5XW4 CNNGB AMZDCN25KLY6TXVA FBA15KSYKJYG')">
+            <td>29033</td>
+            <td>AL0-XY766J6WC3SXX</td>
+            <td>FBEFELN15873NB0</td>
+            <td>LBA4</td>
+            <td><span class="status-other">🔹 已受理</span></td>
+            <td>2025-09-17 09:46:02</td>
+            <td>Fw: Re: 自动回复:Re:  回复:   [GB] [进仓数据确认] AL0-XY766J6WC3SXX SG44VWSYX5XW4 CNNGB AMZDCN25KLY6TXVA FBA15KSYKJYG</td>
+        </tr>
+        
+        <tr onclick="showDetails('29033','AL0-XY766J6WC3SXX','FBEFELN15873NB0','LBA4','已受理','2025-09-17 09:46:02','Re: 自动回复:Re: 自动回复:Re:  回复:   [GB] [进仓数据确认] AL0-XY766J6WC3SXX SG44VWSYX5XW4 CNNGB AMZDCN25KLY6TXVA FBA15KSYKJYG')">
+            <td>29033</td>
+            <td>AL0-XY766J6WC3SXX</td>
+            <td>FBEFELN15873NB0</td>
+            <td>LBA4</td>
+            <td><span class="status-other">🔹 已受理</span></td>
+            <td>2025-09-17 09:46:02</td>
+            <td>Re: 自动回复:Re: 自动回复:Re:  回复:   [GB] [进仓数据确认] AL0-XY766J6WC3SXX SG44VWSYX5XW4 CNNGB AMZDCN25KLY6TXVA FBA15KSYKJYG</td>
+        </tr>
+        
+        <tr onclick="showDetails('29030','AL0-QJZNXG3HWZDFC','FBERTMN16039NB0','DTM2','已受理','2025-09-17 09:46:02','Re: 【报关资料】【进仓通知】 [1ST] [OVERSEA] LCL Seller Central AL0-QJZNXG3HWZDFC SMOWOTION SLU CNNGB DTM2 FOB AMZDCN257XID6KUS FBA15KTKVVVM')">
+            <td>29030</td>
+            <td>AL0-QJZNXG3HWZDFC</td>
+            <td>FBERTMN16039NB0</td>
+            <td>DTM2</td>
+            <td><span class="status-other">🔹 已受理</span></td>
+            <td>2025-09-17 09:46:02</td>
+            <td>Re: 【报关资料】【进仓通知】 [1ST] [OVERSEA] LCL Seller Central AL0-QJZNXG3HWZDFC SMOWOTION SLU CNNGB DTM2 FOB AMZDCN257XID6KUS FBA15KTKVVVM</td>
+        </tr>
+        
+        <tr onclick="showDetails('29030','AL0-QJZNXG3HWZDFC','FBERTMN16039NB0','DTM2','已受理','2025-09-17 09:46:02','Re: Re: 【报关资料】【进仓通知】 [1ST] [OVERSEA] LCL Seller Central AL0-QJZNXG3HWZDFC SMOWOTION SLU CNNGB DTM2 FOB AMZDCN257XID6KUS FBA15KTKVVVM')">
+            <td>29030</td>
+            <td>AL0-QJZNXG3HWZDFC</td>
+            <td>FBERTMN16039NB0</td>
+            <td>DTM2</td>
+            <td><span class="status-other">🔹 已受理</span></td>
+            <td>2025-09-17 09:46:02</td>
+            <td>Re: Re: 【报关资料】【进仓通知】 [1ST] [OVERSEA] LCL Seller Central AL0-QJZNXG3HWZDFC SMOWOTION SLU CNNGB DTM2 FOB AMZDCN257XID6KUS FBA15KTKVVVM</td>
+        </tr>
+        
+        <tr onclick="showDetails('29129','AL0-XUSCBWWVWCYKC','FBERTMN16033NB0','DUS2','已提交','2025-09-17 12:46:32','AL0-XUSCBWWVWCYKC WT25CKWH0728 报关资料')">
+            <td>29129</td>
+            <td>AL0-XUSCBWWVWCYKC</td>
+            <td>FBERTMN16033NB0</td>
+            <td>DUS2</td>
+            <td><span class="status-other">🔹 已提交</span></td>
+            <td>2025-09-17 12:46:32</td>
+            <td>AL0-XUSCBWWVWCYKC WT25CKWH0728 报关资料</td>
+        </tr>
+        
+        <tr onclick="showDetails('29130','AL0-R6TAQXTRE276S','FBERTMN16034NB0','DTM2','已提交','2025-09-17 12:46:32','AL0-R6TAQXTRE276S WT25CKWH0727 报关资料')">
+            <td>29130</td>
+            <td>AL0-R6TAQXTRE276S</td>
+            <td>FBERTMN16034NB0</td>
+            <td>DTM2</td>
+            <td><span class="status-other">🔹 已提交</span></td>
+            <td>2025-09-17 12:46:32</td>
+            <td>AL0-R6TAQXTRE276S WT25CKWH0727 报关资料</td>
+        </tr>
+        
+        <tr onclick="showDetails('29132','AL0-SE2W2JMUWZZ7M','FBERTMN15778NB0','DTM2','已提交','2025-09-17 13:15:26','Re: RE: [NL] [进仓数据确认] AL0-SE2W2JMUWZZ7M QQVPJHUTWT53A CNNGB AMZDCN25FZAYXTTH FBA15KSGXQ92')">
+            <td>29132</td>
+            <td>AL0-SE2W2JMUWZZ7M</td>
+            <td>FBERTMN15778NB0</td>
+            <td>DTM2</td>
+            <td><span class="status-other">🔹 已提交</span></td>
+            <td>2025-09-17 13:15:26</td>
+            <td>Re: RE: [NL] [进仓数据确认] AL0-SE2W2JMUWZZ7M QQVPJHUTWT53A CNNGB AMZDCN25FZAYXTTH FBA15KSGXQ92</td>
+        </tr>
+        
+        <tr onclick="showDetails('29133','AL0-RCXSX4YWD53QQ','FBEFELN15776NB0','LBA4','已提交','2025-09-17 13:15:26','Re: Re:  [GB] [进仓数据确认] AL0-RCXSX4YWD53QQ QQVPJHUTWT53A CNNGB AMZDCN25IWOQMDOX FBA15KSGZ3DV')">
+            <td>29133</td>
+            <td>AL0-RCXSX4YWD53QQ</td>
+            <td>FBEFELN15776NB0</td>
+            <td>LBA4</td>
+            <td><span class="status-other">🔹 已提交</span></td>
+            <td>2025-09-17 13:15:26</td>
+            <td>Re: Re:  [GB] [进仓数据确认] AL0-RCXSX4YWD53QQ QQVPJHUTWT53A CNNGB AMZDCN25IWOQMDOX FBA15KSGZ3DV</td>
+        </tr>
+        
+        <tr onclick="showDetails('28601','AL0-SGPAWBGTGTG7Q','FBERTMN15895NB0','XDU5','审核成功','2025-09-15 12:01:30','回复: 回复: 【SX报关资料】FW: [EU] AL0-SGPAWBGTGTG7Q CNNGB AMZDCN256YJEO76T FBA15KT0VW7S NL')">
+            <td>28601</td>
+            <td>AL0-SGPAWBGTGTG7Q</td>
+            <td>FBERTMN15895NB0</td>
+            <td>XDU5</td>
+            <td><span class="status-other">🔹 审核成功</span></td>
+            <td>2025-09-15 12:01:30</td>
+            <td>回复: 回复: 【SX报关资料】FW: [EU] AL0-SGPAWBGTGTG7Q CNNGB AMZDCN256YJEO76T FBA15KT0VW7S NL</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 详情弹窗 -->
+  <div class="modal" id="detailModal">
+    <div class="modal-content">
+      <h3>记录详情</h3>
+      <p id="detailBody"></p>
+      <button onclick="closeModal()">关闭</button>
+    </div>
+  </div>
+
+<script>
+function toggleTheme(){
+  const html=document.documentElement;
+  const theme=html.getAttribute("data-theme")==="dark"?"light":"dark";
+  html.setAttribute("data-theme",theme);
+}
+
+document.getElementById("search").addEventListener("keyup",function(){
+  let filter=this.value.toLowerCase();
+  let rows=document.querySelectorAll("#report-table tbody tr");
+  rows.forEach(r=>{
+    r.style.display=r.innerText.toLowerCase().includes(filter)?"":"none";
+  });
+});
+
+function showDetails(id, bookingKey, cdsNo, ffcNo, status, createDate, subject) {
+  const detailBody = document.getElementById('detailBody');
+  detailBody.innerHTML = `
+    <strong>ID:</strong> ${id}<br>
+    <strong>Booking Key:</strong> ${bookingKey}<br>
+    <strong>CDS No:</strong> ${cdsNo}<br>
+    <strong>FFC No:</strong> ${ffcNo}<br>
+    <strong>状态:</strong> ${status}<br>
+    <strong>创建日期:</strong> ${createDate}<br>
+    <strong>主题:</strong> ${subject}<br>
+  `;
+  document.getElementById("detailModal").style.display="flex";
+}
+
+function closeModal(){
+  document.getElementById("detailModal").style.display="none";
+}
+</script>
+</body>
+</html>

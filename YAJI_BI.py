@@ -3798,9 +3798,9 @@ def send_alo_without_fbe_report_via_email(recipients, data):
 
 # 修改主程序部分
 def main():
-    # saika()
-    # saika_fba()
-    # eternal()
+    saika()
+    saika_fba()
+    eternal()
 
     # 查询数据
     data = query_alo_and_booking_mapping()
@@ -3820,7 +3820,8 @@ def main():
         'qiyz@smartebao.com',
         'luye@smartebao.com',
         'zhuke@smartebao.com',
-        'wangk@smartebao.com'
+        'wangk@smartebao.com',
+        'xumy@smartebao.com'
     ]
 
     # 准备综合报表数据
@@ -3873,6 +3874,6 @@ def job():
 if __name__ == '__main__':
     while True:
         main()
-        time.sleep(1800)
+        time.sleep(3600)
 
 
