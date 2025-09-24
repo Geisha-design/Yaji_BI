@@ -1,6 +1,6 @@
 import pymysql
 from datetime import datetime, date
-from yaji_obsidian import thread_safe_print
+from legacy.yaji_obsidian import thread_safe_print
 import os
 
 # MySQL数据库配置

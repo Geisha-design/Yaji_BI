@@ -1,23 +1,9 @@
-import pymysql
-from datetime import datetime, date, timedelta
+from datetime import datetime, date
 # 在文件顶部添加新的导入
-import tempfile
-import os
-from email.mime.application import MIMEApplication
-from Yaji_mysql_email import eternal
-from Yaji_mysql_main import saika
-from yaji_obsidian import thread_safe_print
-import os
+from legacy.Yaji_mysql_email import eternal
+from legacy.Yaji_mysql_main import saika
+from legacy.yaji_obsidian import thread_safe_print
 # 在文件顶部导入所需模块
-import smtplib
-import mimetypes
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.mime.base import MIMEBase
-from email import encoders
-import pandas as pd
-from io import BytesIO
-import xlsxwriter
 
 import schedule
 import time

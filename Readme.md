@@ -1,3 +1,41 @@
+# YAJI RPA 项目
+
+这是一个用于自动化处理亚集相关业务流程的RPA项目。
+
+## 项目结构
+
+```
+yaji_rpa/
+├── config/                 # 配置文件目录
+├── data/                   # 数据处理模块
+├── database/               # 数据库相关操作
+├── scraper/                # 网页抓取和API调用模块
+├── reports/                # 报表生成和邮件发送模块
+├── utils/                  # 工具函数模块
+├── main.py                # 主程序入口
+└── requirements.txt       # 依赖包列表
+```
+
+## 模块说明
+
+### config/
+存放项目配置文件，如数据库配置、邮件配置等。
+
+### data/
+处理业务数据，包括数据清洗、转换等操作。
+
+### database/
+处理数据库连接、表创建、数据存取等操作。
+
+### scraper/
+负责网页登录、数据抓取、API调用等操作。
+
+### reports/
+生成各种报表，包括HTML报表和Excel报表，并处理邮件发送。
+
+### utils/
+通用工具函数，如日志打印、字符串处理等。
+
 # 亚集邮件处理与报表生成系统说明文档
 
 ## 概述
@@ -21,7 +59,7 @@
 
 ## 系统架构
 
-```mermaid
+```
 graph TD
     A[主程序入口] --> B[数据处理模块]
     A --> C[报表生成模块]
@@ -176,7 +214,7 @@ def send_email_report(html_content, recipients, subject=None):
 
 ## 使用流程
 
-```mermaid
+```
 flowchart TD
     A[启动程序] --> B[执行数据处理函数]
     B --> C[查询未处理邮件数据]

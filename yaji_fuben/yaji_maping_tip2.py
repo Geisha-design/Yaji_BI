@@ -1,17 +1,14 @@
 import pymysql
 from datetime import datetime, date
 
-from Yaji_mysql_email import eternal
-from Yaji_mysql_main import saika
-from yaji_obsidian import thread_safe_print
+from legacy.Yaji_mysql_email import eternal
+from legacy.Yaji_mysql_main import saika
+from legacy.yaji_obsidian import thread_safe_print
 import os
 # 在文件顶部导入所需模块
 import smtplib
-import mimetypes
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email.mime.base import MIMEBase
-from email import encoders
 
 # MySQL数据库配置
 MYSQL_CONFIG = {

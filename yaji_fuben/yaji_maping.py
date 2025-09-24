@@ -1,6 +1,6 @@
 import pymysql
-from datetime import datetime, date
-from yaji_obsidian import thread_safe_print
+from datetime import date
+from legacy.yaji_obsidian import thread_safe_print
 # MySQL数据库配置
 MYSQL_CONFIG = {
     'host': 'localhost',
