@@ -597,8 +597,8 @@ def rpapage():
 
 
 def rpapageshadow():
-    co = ChromiumOptions()
-    # co = ChromiumOptions().headless()
+    # co = ChromiumOptions()
+    co = ChromiumOptions().headless()
     so = SessionOptions()
     page = WebPage(chromium_options=co, session_or_options=so)
     page.get('https://www.yagikoifish.com/vms/index.html#/login?redirect=%2F')
