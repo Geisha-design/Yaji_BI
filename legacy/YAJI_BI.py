@@ -3621,7 +3621,8 @@ def main():
         'luye@smartebao.com',
         'zhuke@smartebao.com',
         'wangk@smartebao.com',
-        'xumy@smartebao.com'
+        'xumy@smartebao.com',
+        'shenjiahui5016802@hotmail.com'
     ]
 
     # 准备综合报表数据
@@ -3673,7 +3674,12 @@ def job():
 
 if __name__ == '__main__':
     while True:
-        main()
-        time.sleep(3600)
+        try:
+            main()
+            time.sleep(3600)
+
+        except Exception as e:
+            print(f"程序异常: {e}")
+
 
 

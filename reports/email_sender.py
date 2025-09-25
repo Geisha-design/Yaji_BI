@@ -14,6 +14,96 @@ from reports.generator import generate_combined_html_report, generate_html_repor
 from utils.helpers import thread_safe_print
 from io import BytesIO
 import pandas as pd
+def send_dashboard_report(recipients, data_dict):
+    """
+    发送艺术化数据仪表板报告
+
+    Args:
+        recipients (list): 收件人邮箱列表
+        data_dict (dict): 包含各类报表数据的字典
+
+    Returns:
+        bool: 发送成功返回True，否则返回False
+    """
+    try:
+        from reports.generator import generate_dashboard_html
+
+        # 生成仪表板HTML报表
+        html_content = generate_dashboard_html(data_dict)
+
+        # 设置邮件主题
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        subject = f"🎨 亚集数据洞察仪表板 - {current_time}"
+
+        # 创建邮件对象
+        msg = MIMEMultipart('alternative')
+        msg['From'] = f"{EMAIL_CONFIG['sender_name']} <{EMAIL_CONFIG['sender_email']}>"
+        msg['To'] = ', '.join(recipients)
+        msg['Subject'] = subject
+
+        # 添加HTML内容
+        html_part = MIMEText(html_content, 'html', 'utf-8')
+        msg.attach(html_part)
+
+        # 连接SMTP服务器并发送邮件
+        server = smtplib.SMTP(EMAIL_CONFIG['smtp_server'], EMAIL_CONFIG['smtp_port'])
+        server.starttls()
+        server.login(EMAIL_CONFIG['sender_email'], EMAIL_CONFIG['sender_password'])
+        server.send_message(msg)
+        server.quit()
+
+        thread_safe_print(f"🎨 数据仪表板报告已成功发送至: {', '.join(recipients)}")
+        return True
+
+    except Exception as e:
+        thread_safe_print(f"❌ 发送数据仪表板报告失败: {e}")
+        return False
+
+# 在 email_sender.py 中添加新函数
+def send_comprehensive_report(recipients, data_dict):
+    """
+    发送综合性的展示HTML页面
+
+    Args:
+        recipients (list): 收件人邮箱列表
+        data_dict (dict): 包含各类报表数据的字典
+
+    Returns:
+        bool: 发送成功返回True，否则返回False
+    """
+    try:
+        from reports.generator import generate_comprehensive_html_report
+
+        # 生成综合HTML报表
+        html_content = generate_comprehensive_html_report(data_dict)
+
+        # 设置邮件主题
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        subject = f"亚集RPA综合数据报告 - {current_time}"
+
+        # 创建邮件对象
+        msg = MIMEMultipart('alternative')
+        msg['From'] = f"{EMAIL_CONFIG['sender_name']} <{EMAIL_CONFIG['sender_email']}>"
+        msg['To'] = ', '.join(recipients)
+        msg['Subject'] = subject
+
+        # 添加HTML内容
+        html_part = MIMEText(html_content, 'html', 'utf-8')
+        msg.attach(html_part)
+
+        # 连接SMTP服务器并发送邮件
+        server = smtplib.SMTP(EMAIL_CONFIG['smtp_server'], EMAIL_CONFIG['smtp_port'])
+        server.starttls()
+        server.login(EMAIL_CONFIG['sender_email'], EMAIL_CONFIG['sender_password'])
+        server.send_message(msg)
+        server.quit()
+
+        thread_safe_print(f"综合展示报表邮件已成功发送至: {', '.join(recipients)}")
+        return True
+
+    except Exception as e:
+        thread_safe_print(f"发送综合展示报表邮件失败: {e}")
+        return False
 
 
 def send_email_report(html_content, recipients, subject=None):
